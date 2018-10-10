@@ -1,0 +1,11 @@
+.grid-form .control-group{
+	padding: 0 0 0 0;
+}
+
+.form-actions{
+	padding: 10px 20px 10px;
+}
+
+.form-horizontal .control-group{
+	margin-bottom: 0px !important;
+}

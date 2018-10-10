@@ -1,0 +1,380 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+<style type="text/css">.jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}</style><style type="text/css">.jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}</style><style type="text/css">.jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}</style>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+        <!--[if lt IE 9]>
+            <script src="{{ asset('bundles/uicore/javascripts/vendor/html5shiv.js') }}"></script>
+        <![endif]-->
+        <script src="{{ asset('bundles/uicore/javascripts/vendor/jquery.uploader/js/vendor/jquery.ui.widget.js') }}"></script>
+        <script src="{{ asset('bundles/uicore/javascripts/vendor/jquery.uploader/js/jquery.iframe-transport.js') }}"></script>
+        <script src="{{ asset('bundles/uicore/javascripts/vendor/jquery.uploader/js/jquery.fileupload.js') }}"></script>
+        <script>
+            var is_edit = false;
+var current_edit_user = 0; 
+var url;
+
+var current = '';
+$(document).ready(function() {	
+	/**
+	 * 
+	 * Selector de imágenes
+	 */
+	$('#iva-uploader').click(function(){
+		$('#fileupload').click();
+		current = 'iva';
+	});
+	
+	$('#ica-uploader').click(function(){
+		$('#fileupload').click();
+		current = 'ica';
+	});
+	
+	$('#renta-uploader').click(function(){
+		$('#fileupload').click();
+		current = 'renta';
+	});
+	
+	$('#fileupload').fileupload({
+		url: 'uploadfile',
+		dataType: 'json',
+    	progressall: function (e, data) {
+    		$('#loader_holder_'+current).removeClass('hidden_field');
+	        $('#loader_percent_'+current).text((Math.round(data.loaded*100/data.total) + '%'));
+    	}, 
+    	fail: function(e, data){
+    		$('#loader_holder_'+current).addClass('hidden_field');
+    		$('#loader_percent_'+current).text('');
+    	},
+    	done: function(e, data){
+    		$('#loader_holder_'+current).addClass('hidden_field');
+    		$('#loader_percent_'+current).text('');
+
+			$('#loader_resutl_'+current).removeClass('hidden_field');
+			$('#loader_resutl_'+current).text(data.result.file_url.trim());
+    	}
+	});
+
+	$('#send_iva').click(updateIva);
+	$('#send_ica').click(updateIca);
+	$('#send_renta').click(updateRenta);
+}); 
+
+
+function updateIva(){
+
+	if($('#loader_resutl_iva').hasClass('hidden_field')){
+		$('#alert-message').html('<p>Debe cargar el documento de IVA</p>');
+		$('#alert_launcher').click();
+	} else {	
+		$('#page_loader').show();
+		$.ajax({
+		url: "loadiva?name="+$('#loader_resutl_iva').text(),
+			type: "POST",
+			dataType: "json",
+			success: onLoadData,
+			error: onErrorData
+		});	
+	}
+}
+
+function updateIca(){
+
+	if($('#loader_resutl_ica').hasClass('hidden_field')){
+		$('#alert-message').html('<p>Debe cargar el documento de ICA</p>');
+		$('#alert_launcher').click();
+	} else {	
+		$('#page_loader').show();
+		$.ajax({
+			url: "loadica?name="+$('#loader_resutl_ica').text(),
+			type: "POST",
+			dataType: "json",
+			success: onLoadData,
+			error: onErrorData
+		});	
+	}
+	console.log('llama ica');
+}
+
+function updateRenta(){
+
+	if($('#loader_resutl_renta').hasClass('hidden_field')){
+		$('#alert-message').html('<p>Debe cargar el documento de RENTA</p>');
+		$('#alert_launcher').click();
+	} else {	
+		$('#page_loader').show();
+		$.ajax({
+		url: "loadrenta?name="+$('#loader_resutl_renta').text(),
+			type: "POST",
+			dataType: "json",
+			success: onLoadData,
+			error: onErrorData
+		});	
+	}
+}
+
+
+function onErrorData(){
+	$('#page_loader').hide();
+	$('#alert-message').html('<p>Archivo mal formateado</p>');
+	$('#alert_launcher').click();
+	
+	
+}
+
+function onLoadData(data){
+	$('#page_loader').hide();
+	
+	$('#alert-message').html('<p>Se cargaron '+ data[0].total + '</p>');
+	$('#alert_launcher').click();
+}
+
+            
+        </script>
+{% endblock %}
+{% block body %}
+	<div class="uk-alert uk-alert-danger" data-uk-alert="">
+        <p>Tenga en cuenta que la fecha de inicio es la fecha en la que se debe iniciar el borrado de datos, y la fecha final es la fecha final para completar el rango de borrado de datos. La fecha que se toma como referencia es la fecha de pago del Impuesto, por ejmeplo: para borrar Octubre en el Iva se debe borrar por la fecha de pago, es decir Noviembre.</p>
+        <p>El formato de los archivos debe ser CSV separados por ; (Punto y Coma) y las fechas deben estar en el formato 2015-11-01 (AAAA-MM-DD)</p>
+    </div>
+
+
+
+
+        <div class="sidebar-background">
+            <div class="primary-sidebar-background"></div>
+        </div>
+        <!-- wrapper principal -->
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="area-top clearfix">
+                        <div class="pull-left header">
+                            <h3 class="title"><i class="icon-dashboard"></i>Cargue de información</h3>
+                            <h5>Cargue los archivos CSV con la data item</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid padded form-user">
+		    	<div class="row-fluid">
+  					<div class="span12" id="create_form">
+    					<div class="row-fluid">
+						  <div class="span12" >
+						    <div class="box">
+						      <div class="box-header">
+						        <span class="title">Formulario de IVA</span>
+						      </div>
+						      
+						      <div class="box-content">
+						      	<form class="fill-up">
+						      		<div class="row-fluid">
+						      			<div class="span6">
+								      		<ul class="padded separate-sections">
+								      			<li class="input">
+								      				<p>De clic sobre el icono para iniciar el cargue del archivo, una ves cargado de guardar para almacenar la infomación en base de datos</p>
+								      				<p>El formato de nombre de archivo debe ser IVA-dd-mm-aaaa.csv</p>
+								      				<a href="javascript:;" id="iva-uploader" class="profile_pic thumbnail">
+											        	<img id="profile_pic" src="{{asset('bundles/uicore/images/icocsv.png')}}" alt="">
+											       	</a>
+								      			</li>
+								      			<li class="input hidden_field" id="loader_holder_iva">
+								                   <img class="loader" src="{{asset('bundles/uicore/images/loader.GIF')}}">  
+								                   <label class="loader_label">Cargado<p id="loader_percent_iva"></p></label>
+								                   
+								                </li>
+								                
+								                <li class="input hidden_field" id="loader_resutl_iva">
+								                   <label class="loader_label">Datos cargados<p id="loader_percent"></p></label>
+								                </li>
+								                
+								            </ul>
+								      	</div>
+						      		</div>
+						      	</form>
+								<div class="form-actions">
+						            <button id="send_iva" type="submit" class="btn btn-blue">Guardar</button>
+						        </div>
+						      </div>					      
+						    </div>
+						  </div>
+    					</div>	
+    				</div>
+    			</div>
+    			
+    			<div class="row-fluid">
+  					<div class="span12" id="create_form">
+    					<div class="row-fluid">
+						  <div class="span12" >
+						    <div class="box">
+						      <div class="box-header">
+						        <span class="title">Formulario de ICA</span>
+						      </div>
+						      
+						      <div class="box-content">
+						      	<form class="fill-up">
+						      		<div class="row-fluid">
+						      			<div class="span6">
+								      		<ul class="padded separate-sections">
+								      			<li class="input">
+								      				<p>De clic sobre el icono para iniciar el cargue del archivo, una ves cargado de guardar para almacenar la infomación en base de datos</p>
+								      				<p>El formato de nombre de archivo debe ser ICA-dd-mm-aaaa.csv</p>
+								      				<a href="javascript:;" id="ica-uploader" class="profile_pic thumbnail">
+											        	<img id="profile_pic" src="{{asset('bundles/uicore/images/icocsv.png')}}" alt="">
+											       	</a>
+								      			</li>
+								      			<li class="input hidden_field" id="loader_holder_ica">
+								                   <img class="loader" src="{{asset('bundles/uicore/images/loader.GIF')}}">  
+								                   <label class="loader_label">Cargado<p id="loader_percent_ica"></p></label>
+								                </li>
+								                <li class="input hidden_field" id="loader_resutl_ica">
+								                   <label class="loader_label">Datos cargados<p id="loader_percent"></p></label>
+								                </li>
+								            </ul>
+								      	</div>
+						      		</div>
+						      	</form>
+								<div class="form-actions">
+						           <button id="send_ica" type="submit" class="btn btn-blue">Guardar</button>
+						        </div>
+						      </div>					      
+						    </div>
+						  </div>
+    					</div>	
+    				</div>
+    			</div>
+    			
+    			<div class="row-fluid">
+  					<div class="span12" id="create_form">
+    					<div class="row-fluid">
+						  <div class="span12" >
+						    <div class="box">
+						      <div class="box-header">
+						        <span class="title">Formulario de RENTA</span>
+						      </div>
+						      
+						      <div class="box-content">
+						      	<form class="fill-up">
+						      		<div class="row-fluid">
+						      			<div class="span6">
+								      		<ul class="padded separate-sections">
+								      			<li class="input">
+								      				<p>De clic sobre el icono para iniciar el cargue del archivo, una ves cargado de guardar para almacenar la infomación en base de datos</p>
+								      				<p>El formato de nombre de archivo debe ser RENTA-dd-mm-aaaa.csv</p>
+								      				<a href="javascript:;" id="renta-uploader" class="profile_pic thumbnail">
+											        	<img id="profile_pic" src="{{asset('bundles/uicore/images/icocsv.png')}}" alt="">
+											       	</a>
+								      			</li>
+								      			<li class="input hidden_field" id="loader_holder_renta">
+								                   <img class="loader" src="{{asset('bundles/uicore/images/loader.GIF')}}">  
+								                   <label class="loader_label">Cargado<p id="loader_percent_renta"></p></label>
+								                </li>
+								                <li class="input hidden_field" id="loader_resutl_renta">
+								                   <label class="loader_label">Datos cargada<p id="loader_percent"></p></label>
+								                </li>
+								            </ul>
+								      	</div>
+						      		</div>
+						      	</form>
+								<div class="form-actions">
+						            <button id="send_renta" type="submit" class="btn btn-blue">Guardar</button>
+					          	</div>
+						      </div>					      
+						    </div>
+						  </div>
+    					</div>	
+    				</div>
+    			</div>
+			</div>
+			<li class="input cliente_form hidden_field">
+				<input class="hidden_field" id="fileupload" type="file"  name="files[]" accept=".csv" multiple>
+			</li>
+			
+		
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#modal-simple" id="modal_launcher" class="hidden_field"> </a>
+		<div id="modal-simple" class="modal hide fade">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			    <h6 id="modal-tablesLabel">Información de usuario</h6>
+			  </div>
+			  <div class="content">
+				
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			  </div>
+		</div>
+		
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#alert-simple" id="alert_launcher" class="hidden_field"> </a>
+		<div id="alert-simple" class="modal hide fade">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h6 id="modal-tablesLabel">Mensaje</h6>
+		  </div>
+		  <div class="modal-body" id="alert-message">
+		    
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn btn-blue" data-dismiss="modal">Cerrar</button>
+		  </div>
+		</div>
+		
+		<div id="page_loader">
+    		<div><img src="{{asset('bundles/uicore/images/pageloader.gif')}}" /></div>
+    	</div>
+		
+		<a data-toggle="modal" href="#modal-simple" id="modal_launcher" class="hidden_field"> </a>
+		<div id="modal-simple" class="modal hide fade">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			    <h6 id="modal-tablesLabel">Mensaje</h6>
+			  </div>
+			  <div class="modal-body">
+				_mensaje_
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			  </div>
+		</div>
+		
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#look-simple" id="look_launcher" class="hidden_field"> </a>
+		<div id="look-simple" class="modal hide fade">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h6 id="modal-tablesLabel">Información usuario</h6>
+		  </div>
+		  <div class="modal-body" id="alert-message">
+                    <div class="box-section news"> 
+                        <ul class="user-info">
+                                <li class="title_name"><div id="" class="news-title">NIT: </div></li>
+                                <li class="title_name"><div id="lnit" class="news-title">  </div></li>
+                                <li><b>Nombre:</b> </li>
+                                <ll><p id="lnombre" ></p></ll>
+                                <li><b>Dirección:</b> </li>
+                                <li><p id="ldireccion" ></p></li>
+                                <li><b>Teléfono:</b> </li>
+                                <li><p id="ltel" ></p></li>
+                                <li><b>Ciudad:</b> </li>
+                                <li><p id="lciudad" ></p></li>
+                                <li><b>Mail:</b> </li>
+                                <li><p id="lmail" ></p></li>
+                                <li><b>Contraseña:</b></li>
+                                <li><p id="lpassword" ></p></li>
+                        </ul>
+                    </div>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn btn-blue" data-dismiss="modal">Cerrar</button>
+		  </div>
+		</div>
+		
+		<footer>
+
+		</footer>
+	</div>
+{% endblock %}

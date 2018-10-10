@@ -1,0 +1,46 @@
+<?php
+
+namespace Impuestos\BackendBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * LogAccesos
+ *
+ * @ORM\Table(name="log_accesos", indexes={@ORM\Index(name="usuario_id", columns={"usuario_id"})})
+ * @ORM\Entity
+ */
+class LogAccesos
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha", type="datetime", nullable=false)
+     */
+    private $fecha;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="usuario_id", type="bigint", nullable=false)
+     */
+    private $usuarioId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tipo_acceso", type="string", length=250, nullable=false)
+     */
+    private $tipoAcceso;
+
+
+}

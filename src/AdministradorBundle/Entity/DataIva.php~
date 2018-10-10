@@ -1,0 +1,109 @@
+<?php
+
+namespace Impuestos\BackendBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * DataIva
+ *
+ * @ORM\Table(name="data_iva", indexes={@ORM\Index(name="nit", columns={"nit"})})
+ * @ORM\Entity
+ */
+class DataIva
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nit", type="string", length=455, nullable=false)
+     */
+    private $nit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=455, nullable=false)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direcciÃ³n", type="string", length=455, nullable=false)
+     */
+    private $direcciã³n;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ciudad", type="string", length=45, nullable=false)
+     */
+    private $ciudad;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mes", type="string", length=45, nullable=false)
+     */
+    private $mes;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="declaraciÃ³n", type="string", length=20, nullable=false)
+     */
+    private $declaraciã³n = '';
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_pago", type="date", nullable=false)
+     */
+    private $fechaPago;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="procetaje", type="string", length=10, nullable=false)
+     */
+    private $procetaje = '';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="supa_base", type="integer", nullable=false)
+     */
+    private $supaBase;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="iva", type="integer", nullable=false)
+     */
+    private $iva;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="rete_iva", type="integer", nullable=true)
+     */
+    private $reteIva;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ano", type="string", length=10, nullable=true)
+     */
+    private $ano;
+
+
+}

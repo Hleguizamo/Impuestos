@@ -1,0 +1,66 @@
+    <table class="table table-striped table-hover">
+        {% if ica %}
+            <thead>
+                <tr>
+                    <th>Ciudad</th>
+                    <th>Porcentaje</th>
+                    <th>Actividad</th>
+                    <th>Año</th>
+                    <th width="72px">Consultar</th>
+                    <th width="102px">Descargar PDF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for certificadoIca in ica %}
+                    <tr class="text-center">
+                        <td>{{certificadoIca.ciudad}}</td>
+                        <td>{{certificadoIca.porcentaje}}</td>
+                        <td>{{certificadoIca.concepto}}</td>
+                        <td>{{certificadoIca.fechaPago}}</td>
+                        <td align="center"><button data-uk-modal="{target:'#my-id'}" onclick="requestReport('{{certificadoIca.ciudad}}','{{certificadoIca.porcentaje}}','{{certificadoIca.concepto}}','{{certificadoIca.fechaPago}}')" type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button></td>
+                        <td align="center"><button onclick="requestPDFReport('{{certificadoIca.ciudad}}','{{certificadoIca.porcentaje}}','{{certificadoIca.concepto}}','{{certificadoIca.fechaPago}}')" type="button" class="btn btn-success"><i class="fa fa-download"></i></button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% endif %}
+        {% if iva %}
+            <thead>
+                <tr>
+                    <th>Ciudad</th>
+                    <th>Porcentaje</th>
+                    <th>Año</th>
+                    <th width="72px">Consultar</th>
+                    <th width="102px">Descargar PDF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for certificadoIva in iva %}
+                    <tr class="text-center">
+                        <td>{{certificadoIva.ciudad}}</td>
+                        <td>{{certificadoIva.porcentaje}}</td>
+                        <td>{{certificadoIva.ano}}</td>
+                        <td align="center"><button data-uk-modal="{target:'#my-id'}" onclick="requestReport('{{certificadoIva.ciudad}}','{{certificadoIva.porcentaje}}','','{{certificadoIva.ano}}')" type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button></td>
+                        <td align="center"><button onclick="requestPDFReport('{{certificadoIva.ciudad}}','{{certificadoIva.porcentaje}}','','{{certificadoIva.ano}}')" type="button" class="btn btn-success"><i class="fa fa-download"></i></button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% endif %}
+        {% if renta %}
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th width="72px">Consultar</th>
+                    <th width="102px">Descargar PDF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for certificadoRenta in renta %}
+                    <tr class="text-center">
+                        <td>{{certificadoRenta.year}}</td>
+                        <td align="center"><button data-uk-modal="{target:'#my-id'}" onclick="requestReport('',0,0,'{{certificadoRenta.year}}')" type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button></td>
+                        <td align="center"><button onclick="requestPDFReport('',0,0,'{{certificadoRenta.year}}')" type="button" class="btn btn-success"><i class="fa fa-download"></i></button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% endif %}    
+    </table>

@@ -1,0 +1,92 @@
+usuario_login_inicio:
+  path:  /
+  defaults: { _controller: CertificadosBundle:Default:index }
+  
+usuario_login_check:
+    path: /login_check
+usuario_login:
+  path:  /login
+  defaults: { _controller: CertificadosBundle:Default:index }
+usuario_logout:
+  path:  /logout
+  defaults: { _controller: CertificadosBundle:Default:logout }
+usuario_cambioClave:
+  path:  /cambioClave
+  defaults: { _controller: CertificadosBundle:Default:cambioClave }
+usuario_cambiarClave:
+  path:  /cambiarClave
+  defaults: { _controller: CertificadosBundle:Default:cambiarClave }
+usuario_recordar_clave:
+  path:  /recordarClave
+  defaults: { _controller: CertificadosBundle:Default:reminder }
+usuario_default_envio:
+  path:  /envio
+  defaults: { _controller: CertificadosBundle:Default:envio }
+usuario_usuario:
+  path:  /usuario
+  defaults: { _controller: CertificadosBundle:Usuario:index}
+usuario_ica:
+  path:  /ica
+  defaults: { _controller: CertificadosBundle:Usuario:ica}
+usuario_iva:
+  path:  /iva
+  defaults: { _controller: CertificadosBundle:Usuario:iva}
+usuario_renta:
+  path:  /renta
+  defaults: { _controller: CertificadosBundle:Usuario:rentareport}
+usuario_filters:
+    path:  /filters
+    defaults: { _controller: CertificadosBundle:Usuario:filters}
+usuario_cities:
+    path:  /cities/{type}
+    defaults: { _controller: CertificadosBundle:Usuario:cities}
+    options:
+      expose: true
+usuario_percents:
+    path:  /percents/{type}
+    defaults: { _controller: CertificadosBundle:Usuario:percents}
+    options:
+      expose: true
+usuario_activities:
+    path:  /activities/{type}
+    defaults: { _controller: CertificadosBundle:Usuario:activities}
+    options:
+      expose: true
+usuario_report_renta:
+    path:  /reportes/renta/{city}/{percent}/{activity}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:rentareport}
+    options:
+      expose: true
+usuario_report_ica:
+    path:  /reportes/ica/{city}/{percent}/{activity}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:icareport}
+    options:
+      expose: true
+usuario_report_iva:
+    path:  /reportes/iva/{city}/{percent}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:ivareport}
+    options:
+      expose: true
+usuario_pdf_ica:
+    path:  /reportes/icapdf/{city}/{percent}/{activity}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:icapdf}
+    options:
+      expose: true
+usuario_pdf_iva:
+    path:  /reportes/ivapdf/{city}/{percent}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:ivapdf}
+    options:
+      expose: true
+usuario_pdf_renta:
+    path:  /reportes/rentapdf/{city}/{percent}/{activity}/{year}
+    defaults: { _controller: CertificadosBundle:Usuario:rentapdf}
+    options:
+      expose: true
+
+usuario_editar:
+  path:  /editarUsuario
+  defaults: { _controller: CertificadosBundle:Usuario:editar}
+usuario_actualizarUsuario:
+  path:  /actualizarUsuario/{id}
+  defaults: { _controller: CertificadosBundle:Usuario:update}
+  requirements: { _method: post }

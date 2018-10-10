@@ -1,0 +1,84 @@
+<div class="panel panel-box panel-box-secondary stepy-widget">
+    <div class="widget-head clearfix">
+        {{ form_errors(form) }}
+        {{ form_errors(form.nombre) }}
+        {{ form_errors(form.username) }}
+        {{ form_errors(form.password) }}
+        {{ form_errors(form.email) }}
+    </div>
+    <form id="formAdministrador" method="POST" action="#" class="form-horizontal">
+        <div class="form-group row">
+            <div class="col-md-4">
+                {{ form_label(form.nombre) }}
+            </div>
+            <div class="col-md-8">
+                {{ form_widget(form.nombre) }}
+            </div>
+            <br/>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                {{ form_label(form.username) }}
+            </div>
+            <div class="col-md-8">
+                {{ form_widget(form.username) }}
+            </div>
+            <br/>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                {{ form_label(form.password) }}
+            </div>
+            <div class="col-md-8">
+                {{ form_widget(form.password) }}
+            </div>
+            <br/>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                {{ form_label(form.email) }}
+            </div>
+            <div class="col-md-8">
+                {{ form_widget(form.email) }}
+            </div>
+            <br/>
+        </div>
+        {{ form_rest(form) }}
+        <div class="form-group row">
+            <div class="col-sm-12 text-center">
+                <button id="signupsubmit" class="btn btn-sm btn-success" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#formAdministrador').submit(function(){
+        loadingAlert(); 
+            $.ajax({
+                url: '{{ path('administrador_create') }}', 
+                data: $('#formAdministrador').serialize(),
+                type: 'post',
+                success: function(data){
+                    if(data.status == 1){
+                        $('#modal-admin-new').modal('toggle');
+                        BootstrapDialog.show({
+                            title: 'Editar Administrador',
+                            cssClass: 'modal-admin-edt',
+                            id: 'modal-app-edit',
+                            message: $('<div></div>').load(data.url_edit)
+                        });
+                        swal.close();
+                    }else{
+                        swal.close();
+                        $('.modal-body').html(data.template);
+                    }
+                },
+                error: function(){
+                        swal.close();
+                }
+        });
+        return false;
+    });
+});
+</script>

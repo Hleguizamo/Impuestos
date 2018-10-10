@@ -1,0 +1,102 @@
+<?php
+
+namespace Impuestos\BackendBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * DataIca
+ *
+ * @ORM\Table(name="data_ica", indexes={@ORM\Index(name="nit", columns={"nit"})})
+ * @ORM\Entity
+ */
+class DataIca
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nit", type="string", length=20, nullable=false)
+     */
+    private $nit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=455, nullable=false)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direcciÃ³n", type="string", length=455, nullable=false)
+     */
+    private $direcciã³n = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="concepto", type="string", length=455, nullable=false)
+     */
+    private $concepto;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ciudad", type="string", length=455, nullable=false)
+     */
+    private $ciudad;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mes", type="string", length=45, nullable=false)
+     */
+    private $mes;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="declaraciÃ³n", type="integer", nullable=false)
+     */
+    private $declaraciã³n;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fecha_pago", type="string", length=20, nullable=true)
+     */
+    private $fechaPago;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="procentaje", type="string", length=50, nullable=false)
+     */
+    private $procentaje;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="suma_base", type="string", length=50, nullable=false)
+     */
+    private $sumaBase;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="valor_retenido", type="string", length=50, nullable=false)
+     */
+    private $valorRetenido;
+
+
+}

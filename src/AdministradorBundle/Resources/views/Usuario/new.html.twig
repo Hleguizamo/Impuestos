@@ -1,0 +1,129 @@
+<div class="panel panel-info stepy-widget" style="padding: 15px">
+    <div class="widget-head clearfix">
+        {{ form_errors(form) }}
+        {{ form_errors(form.nit) }}
+        {{ form_errors(form.nombre) }}
+        {{ form_errors(form.direccion) }}
+        {{ form_errors(form.tel) }}
+        {{ form_errors(form.representante) }}
+        {{ form_errors(form.mail) }}
+        {{ form_errors(form.password) }}
+        {{ form_errors(form.enabled) }}
+        {{ form_errors(form.ciudad) }}
+    </div>
+    <form id="formUsuario" method="POST" action="#" class="form-horizontal">
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.nit) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.nit) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.nombre) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.nombre) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.direccion) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.direccion) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.tel) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.tel) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.representante) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.representante) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.mail) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.mail) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.password) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.password) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.enabled) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.enabled, { 'attr': {'class': 'selectpicker form-control'}}) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(form.ciudad) }}
+            </div>
+            <div class="col-sm-8">
+                {{ form_widget(form.ciudad) }}
+            </div>
+        </div>
+        {{ form_rest(form) }}
+        <div class="form-group row">
+            <div class="col-sm-12 text-center">
+                <input id="signupsubmit" name="signup" type="submit" value="GUARDAR" class="btn btn-primary"/>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#formUsuario').submit(function(){
+        loadingAlert(); 
+            $.ajax({
+                url: '{{ path('usuario_create') }}', data: $('#formUsuario').serialize(),
+                type: 'post',
+                beforeSend: function(){
+                    savingAlert();
+                },
+                success: function(data){
+                setTimeout(function()
+                 {
+                        if(data.status == 1){
+                            ReloadGrid();
+                            $('#modal-prov-new').modal('toggle');
+                            savedAlert();
+                        }else{
+                            errorAlert()
+                        }
+                    },2500);  
+                },
+                error: function(){
+                    errorAlert()
+                       swal.close();
+                }
+        });
+        return false;
+    });
+
+    $('.selectpicker').selectpicker({
+            size: 8
+    });
+});
+</script>

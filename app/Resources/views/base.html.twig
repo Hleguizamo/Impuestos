@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}COPIDROGAS - IMPUESTOS{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('/css/bootstrap.min.css') }}" />
+            <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}" />
+            {# Fileinput es un plugin para personalizar el boton de subida de archivos#}
+            <link href="{{ asset('css/fileinput.css') }}" rel="stylesheet">
+            <!-- Alertas Personalizadas con SweetAlert -->
+            <link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}" />
+            <!-- Estilos para los Selectores -->
+            <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}" />
+            <link rel="stylesheet" href="{{ asset('css/bootstrap-dialog.min.css') }}" />
+            <!-- Estilos Globales -->
+            <link rel="stylesheet" href="{{ asset('css/styles.css') }}" />
+            <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> -->
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block javascripts %}
+            <script src="{{ asset('js/jquery-1.11.0.min.js') }}"></script>
+            <script src="{{ asset('js/canvas-to-blob.min.js') }}"></script>
+            <script src="{{ asset('js/sortable.min.js') }}"></script>
+            <script src="{{ asset('js/purify.min.js') }}"></script>
+
+            {# Fileinput es un plugin para personalizar el boton de subida de archivos#}
+            <script src="{{ asset('js/fileinput.min.js') }}"></script>
+            <script src="{{ asset('js/es.js') }}"></script>
+            <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+            <!-- Scripts Dialogos de Bootstrap -->
+            <script src="{{ asset('js/bootstrap-dialog.min.js') }}"></script>
+            
+            <!-- Scripts para los selectores -->
+            <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+            <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+            <script src="{{ asset('js/globales.js') }}"></script>
+        {% endblock %}
+        {% block body %}{% endblock %}
+    </body>
+</html>

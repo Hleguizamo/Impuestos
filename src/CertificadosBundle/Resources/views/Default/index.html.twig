@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <title>Login Impuestos - Usuario</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+        <link rel="stylesheet" href="{{ asset('/css/bootstrapWa.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}" />
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}" />
+        <style type="text/css">
+            @CHARSET "UTF-8";
+            .progress-bar{color:#333;} 
+            *{-webkit-box-sizing: border-box;-moz-box-sizing:border-box;box-sizing:border-box;outline:none;}
+            .form-control{position:relative;font-size:16px;height:auto;padding:10px;@include box-sizing(border-box);&:focus{z-index:2;}}
+            body{-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;}
+            .login-form{margin-top:60px;width:600px;}
+            form[role=login]{color:#5d5d5d;background:#f2f2f2;padding:26px;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;}
+            form[role=login] img{display:block;margin:0 auto;margin-bottom:35px;}
+            .form-links{text-align:center;margin-top:1em;margin-bottom:50px;}
+            .form-links a{color:#025AA5;}
+            form{min-width:380px !important ;}
+            form[role=login] input{width:255px !important;}
+        </style>
+        <script language="javascript">if(history.forward(1)){history.replace(history.forward(1));}</script>
+        <script src="{{ asset('js/jqgrid/jquery-1.11.0.min.js') }}"></script>
+        <script src="{{ asset('/js/bootstrap.js') }}"></script>
+        <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.jkey.min.js') }}"></script>
+    <script type="text/javascript">
+    var activo=0;
+    $(function(){
+
+        $('#username').focus();
+        $('#linkRecordartoio').click(function(){;
+            $('#autenticar').hide();
+            $('#recordarClave').show();
+            $('#codigoDrogueria').focus();
+        });
+        $('#linkAutenticar').click(function(){
+            $('#autenticar').show();
+            $('#recordarClave').hide();
+            $('#username').focus();
+        });
+        {% if app.session.flashbag.get('no_cliente')  %} 
+            $('.estado').empty().html('Usuario no encontrado');
+            animar();
+        {% endif %}
+
+        {% if app.session.flashbag.get('sin_autenticar')  %} 
+            $('.estado').empty().html('Usuario y/o contraseña invalidos.');
+            animar();
+        {% endif %}
+
+        {% if app.session.flashbag.get('no_permiso')  %} 
+            $('.estado').empty().html('No tiene permiso para acceder a la aplicaci&oacute;n.<br>Comun&iacute;quese con el administrador o proveedor.');
+            animar();
+        {% endif %}
+        {% for flashMessage in app.session.flashbag.get('Recordatorio') %}$('.estado').empty().html('{{flashMessage}}');{% endfor %}
+        {% if provBloqueado != null %}
+            $('.estado').html('El administrador no le ha concedido permisos para acceder a la aplicación.<br>Por favor, comuníquese con él.');
+            animar();
+        {% endif %}
+        {% if app.session.flashbag.get('error') %}
+            $('.estado').html('Usuario y/o contraseña invalidos');
+            animar();
+        {% endif %}
+        $('#recordarClave').submit(function(){
+            msg='Enviado Correo...';
+            swal({
+                title: 'Cargando',
+                text:msg+'.<br><svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="spinnerMaterialDesign" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>',
+                type:'info',
+                html: true,
+                showConfirmButton: false
+            });            
+            $.ajax({
+                url:'{{ path('usuario_recordar_clave') }}',
+                dataType:'JSON', 
+                data:{nit:$('#nit').val()},
+                type:"POST",
+                beforeSend:function(){
+                },
+                success: function(data){
+                    if(data.success){
+                        $('.estado').text('Se ha enviado la información al correo registrado');
+                    } else {
+                        $('.estado').text('El NIT ingresado no se encuentra registrado');
+                    }
+                    swal.close();
+                },
+                error: function(data){
+                    swal.close();
+                    $('.estado').html("error al enviar recordatorio "+data.status);
+                    animar();
+                }
+            });
+            return false;
+        });
+    });
+    function animar(){
+        $('.estado').removeClass().addClass('bounceInDown animated text-danger estado').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            $(this).removeClass().addClass('text-danger estado');
+        });
+    }
+</script>
+    </head>
+    <body class="three-col logged-out western es front-page-photo-set front-page" data-fouc-class-names="swift-loading" dir="ltr">
+        <div class="col-md-3">&nbsp;</div>
+        <div class="col-md-6">
+            <section class="login-form">
+                <div class="col-md-6 text-right"></div>
+                <div class="col-md-6">
+                    <form method="post" action="{{ path("usuario_login_check") }}" role="login" autocomplete="off" id="autenticar">
+                        <div>Inicio de sesion <b>Impuestos</b> - <b>Usuario</b>.</div>
+                        <div class="input-group input-group-lg">
+                          <span class="input-group-addon" id="sizing-addon1"><i class="fa fa-user"></i>&nbsp;</span>
+                          <input type="text" name="_username" class="form-control" placeholder="Usuario" id="username" aria-describedby="sizing-addon1" value="{% if last_username is defined %}{{ last_username }}{% endif %}" required>
+                        </div>
+                        <div class="input-group input-group-lg">
+                          <span class="input-group-addon" id="sizing-addon1"><i class="fa fa-key"></i></span>
+                          <input type="password" class="form-control" placeholder="Clave" id="password" name="_password" aria-describedby="sizing-addon1" required>
+                        </div>
+                        <div class="input-group input-group-lg">
+                            <div class="pwstrength_viewport_progress"></div>
+                            <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Ingresar</button>
+                            <a href="#" id="linkRecordartoio">Recordar clave</a>
+                        </div>
+                        <div class="text-danger estado"></div>
+                    </form> 
+                    <form method="post" action="#" role="login" autocomplete="off" id="recordarClave" style="display:none;">
+                        <div>Recordatorio de Clave <b>Impuestos</b> - <b>Usuario</b>.</div>
+                        <div class="input-group input-group-lg">
+                          <span class="input-group-addon" id="sizing-addon1"><i class="fa fa-user"></i>&nbsp;</span>
+                          <input type="text" name="nit" class="form-control" placeholder="Nit" id="nit" aria-describedby="sizing-addon1" required>
+                        </div>
+                        <div class="input-group input-group-lg">
+                            <div class="pwstrength_viewport_progress"></div>
+                                <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Recordar Clave</button>
+                                <a href="#" id="linkAutenticar">Autenticar</a>
+                        </div>
+                        <div class="text-danger estado"></div>
+                    </form>              
+                </div>
+            </section> 
+        </div>
+        <div class="col-md-3"><p class="text-right"><img src="{{ asset('images/logoCopidrogas.png') }}" width=""></p></div>        
+        <footer class="footer">
+            <p class="text-muted text-right"><a target="_blank" href="http://www.waplicaciones.co"><img src="{{ asset('images/waplicacionesSAS.png') }}" width="100"></a></p>
+        </footer>
+    </body>
+</html>
+

@@ -1,0 +1,17 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% set permiso = app.session.get('permisos') %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/jqgrid/ui.jqgrid-bootstrap.css') }}" />
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jqgrid/i18n/grid.locale-es.js') }}"></script>
+    <script src="{{ asset('js/jqgrid/jquery.jqGrid.min.js') }}"></script>
+    {% include 'AdministradorBundle:Administrador:index.js.twig' %}
+{% endblock %}
+{% block contenido %}
+    <table id="Grilla"></table>
+    <div id="pGrilla"></div>
+    <div id="dialog"></div>
+{% endblock %}

@@ -1,0 +1,8 @@
+parameters:
+  administrador.login_success_handler.class: AdministradorBundle\Listener\LoginListener
+
+services:
+  administrador.login_success_handler.class:
+    class: "%administrador.login_success_handler.class%"
+    public: false
+    arguments:  ['@service_container']

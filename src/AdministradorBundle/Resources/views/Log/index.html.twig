@@ -1,0 +1,19 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('js/jqgrid/datepicker/css/bootstrap-datepicker.min.css') }}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/jqgrid/ui.jqgrid-bootstrap.css') }}" />
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jqgrid/jquery.jqGrid.min.js') }}"></script>
+    <script src="{{ asset('js/jqgrid/i18n/grid.locale-es.js') }}"></script>
+    <script src="{{ asset('js/jqgrid/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('js/jqgrid/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
+    {% include 'AdministradorBundle:Log:index.js.twig' %}
+{% endblock %}
+{% block contenido %}
+    <table id="Grilla"></table>
+    <div id="pGrilla"></div>
+    <div id="dialog"></div>
+{% endblock %}

@@ -1,0 +1,97 @@
+<script>
+    $(document).ready(function() { 
+        $("#plantilla").click(function() {
+            window.location = '{{ asset('uploads/plantillaProveedor.xls') }}';
+        });
+        var options={target:'#output2',
+                success:showResponse,
+                error:showerror,
+                url:'{{path('usuario_subirArchivo')}}',
+                type:'post',
+                dataType:'json',
+                data: $('#formCargaProveedor').serialize()
+            };
+
+        $('#formCargaProveedor').submit(function(){
+            var file = $('#archivo').val();
+            var extencion = file.substring(file.lastIndexOf('.')).toLowerCase();
+            
+            if(extencion == '.xls' || extencion == '.xlsx'){
+                $('#page_loader').removeClass('hidden');
+                $(this).ajaxSubmit(options);
+                
+            }else{
+                swal({
+                    title: 'Información',
+                    text:'El archivo a cargar debe tener la extencion XLS, de lo contrario no sera posible procesarlo.',
+                    type:'warning'
+                });
+            }
+            return false;
+        });
+
+         $(".file").fileinput({
+            showUpload: false,
+            maxFileCount: 10,
+            mainClass: "input-group-sm",
+            language: "es",
+            allowedFileExtensions: ['xls','xlsx']
+        });
+
+    }); 
+     
+    function showResponse(data){
+        if (data.estado) {
+            $('#cotenedorCarga').addClass('text-center');
+            $('#cotenedorCarga').addClass('alert alert-success');
+            $('#cotenedorCarga').empty().html(data.resultados);
+            ReloadGrid();
+        }
+        $('#page_loader').addClass('hidden');
+        
+    }
+    function showerror(data){
+        swal.close();
+        errorAlert();
+    }
+</script>
+<div id="cotenedorCarga" class="panel panel-info" style="padding: 10px">
+    <form id="formCargaProveedor" method="POST" class="form-horizontal">
+        <div class="panel panel-info" id="informacion">
+            <div class="row">
+                <p class="lead text-center">Descargar Plantilla para la carga de Proveedores</p>
+            </div>
+            <div class="text-center"><button id="plantilla" type="button" class="btn btn-success"><i class="fa fa-download"></i> Plantilla</button></div>
+        <div class="text-center">
+            <div class="radio">
+                <span class="text-bold">
+                    <input type="radio" name="opcionCarga" title="Esta opción borrara todos los proveedores y cargara los proveedores que vengan en el archivo." class="helpWa" value="1" checked> 
+                    Borrar y Cargar
+                </span>
+            </div>
+            <br>
+                <div class="radio">
+            <span class="text-bold">
+                <input type="radio" name="opcionCarga" title="Esta opción actualizara los proveedores que se encuentren en el archivo y creara los que no estén registrados en base de datos." class="helpWa" value="2"> 
+                Actualizar
+            </span>
+                </div>
+            <br>
+                <div class="radio">
+            <span class="text-bold">
+                <input type="radio" name="opcionCarga" title="Esta opción solo carga los proveedores que no existan en la base de datos." class="helpWa" value="3"> 
+                Solo Cargar
+            </span><br><br>
+            </div>
+            <input type="file" class="file" required="required" name="cargarProveedor" id="archivo"> 
+            <span id="page_loader" class="hidden">Procesando Archivo <i class="fa fa-spinner fa-spin"></i></span><br>
+            <span id="alert-message"></span>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <input id="sendProveedor" name="signup" type="submit" value="CARGAR ARCHIVO" class="btn btn-primary"/>
+            </div>
+        </div>
+    </form>
+</div>

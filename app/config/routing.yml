@@ -1,0 +1,14 @@
+index:
+    path:  /
+    defaults: { _controller: "CertificadosBundle:Default:login" }
+
+usuario:
+    resource: "@CertificadosBundle/Resources/config/routing.yml"
+    prefix:   /usuario
+
+administrador:
+    resource: "@AdministradorBundle/Resources/config/routing.yml"
+    prefix:   /admin
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

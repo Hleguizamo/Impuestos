@@ -1,0 +1,86 @@
+<link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/menu/color-theme.css') }}" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/menu/webslidemenu.css') }}" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ asset('css/menu/demo.css') }}" />
+<script src="{{ asset('js/menu/webslidemenu.js') }}"></script>
+            
+            <div class="container1">
+                <div style="width:100%;position:absolute;top:10px;">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <div class="wsmenucontent overlapblackbg  pm_buttoncolor red"></div>
+                                <div class="wsmenuexpandermain slideRight"> <div style="background-color:red;"> <a id="navToggle" class="animated-arrow slideLeft"><span></span></a></div> 
+                                    <span class="callusicon text-center"></span> 
+                                </div>
+                            </div>
+                        <div class="col-sm-6">
+                        <span class="text-success"><img src="{{ asset('images/online.png') }}" width="18px"> En Línea:</span><span class="text-primary">{{app.session.get('administrador')}}</span>
+                        </div>
+                        <div class="col-sm-5 text-right">
+                            <button id="btnCerrarSesion" type="button" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="Cerrar Sesión"><i class="fa fa-power-off"></i></button> 
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    {% set permiso = app.session.get('permisos') %}
+                    <nav class="wsmenu slideLeft clearfix">
+                        <ul class="mobile-sub wsmenu-list clearfix">
+                            <li><div class="logoforwhite"><img src="{{ asset('images/logoCopidrogas.png') }}" alt=""></div></li>
+                            {% if permiso['cargar'] is defined %}
+                                <li>
+                                    <a href="{{path('default_indexActualizarDB')}}" class="{% if 'cargar/'~permiso['cargar']['accion']==activo %}active{% endif %}"><i class="fa fa-database"></i> Actualizar DB </a>
+                                </li>
+                            {% endif %}
+                            {% if permiso['administradores'] is defined %}
+                                <li>
+                                    <a class="{%if activo=='administrador'%}active{%endif%}" href="{{path('administrador')}}">Administradores</a>
+                                </li>
+                            {% endif %}
+                            {% if permiso['proveedores'] is defined %}
+                                <li>
+                                    <a class="{%if activo=='proveedor'%}active{%endif%}"  href="{{path('usuario')}}">Proveedores</a>
+                                </li>
+                            {% endif %}
+                            {% if permiso['actualizar datos'] is defined %}
+                                {% if permiso['actualizar datos']['tipo'] < 3 %}
+                                    <li>
+                                        <a class="{%if activo=='data'%}active{%endif%}" href="{{path('admin_loaddata')}}">Actualizar Datos</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% if permiso['registro actividades'] is defined %}
+                                <li>
+                                    <a class="{%if activo=='log'%}active{%endif%}" href="{{path('log')}}">Registro de Actividad</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+        
+                </div>
+            </div>
+            <script type="text/javascript">
+                jQuery().ready(function (){
+                    $('#btnCerrarSesion').click(function (){
+                      swal({
+                            title: "Salir",
+                            text: "¿Realmente desea Salir?",
+                            layout : 'center',
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: 'Si, Salir',
+                            cancelButtonText: 'No, Permanecer',
+                            type : 'warning',
+                            },function(isConfirm){
+                                if(isConfirm){
+                                swal.close();
+                                location.href="{{ path('admin_default_logout') }}";
+                                }else{
+                                    swal.close();
+                                }
+                            });
+                    });
+                });
+            </script>
+
+

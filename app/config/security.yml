@@ -1,0 +1,167 @@
+
+security:
+    encoders:
+        administrador:
+            class: AdministradorBundle\Entity\Admin
+            algorithm: plaintext
+        usuario:
+            class: CertificadosBundle\Entity\Usuario
+            algorithm: plaintext
+    providers:
+        administrador:
+            entity: 
+                class: AdministradorBundle\Entity\Admin
+                property: username
+        usuario:
+            entity: 
+                class: CertificadosBundle\Entity\Usuario
+                property: nit       
+    firewalls:
+        administrador_default_login:
+             pattern:  ^/admin/default/login$
+             security: false
+        administrador_default_recordarClave:
+             pattern:  ^/admin/default/recordarClave$
+             security: false
+        administrador_secured_area:
+            pattern:    ^/admin/
+            provider: administrador
+            form_login:
+                check_path: /admin/default/login_check
+                login_path: /admin/default/login
+                default_target_path: /admin/defult/
+                always_use_default_target_path: true
+                success_handler: administrador.login_success_handler.class
+                failure_handler: administrador.login_success_handler.class   
+
+        usuario_login:
+            pattern:  ^/usuario/login$
+            security: false
+        usuario_recordar_clave:
+            pattern:  ^/usuario/recordarClave$
+            security: false
+        usuario_envio:
+            pattern: ^/usuario/envio
+            security: false
+        usuario_secured_area:
+            pattern:    ^/usuario/
+            provider: usuario
+            form_login:
+                check_path: /usuario/login_check
+                login_path: /usuario/login
+                default_target_path: /usuario/
+                always_use_default_target_path: true
+                success_handler: usuario.login_success_handler.class
+                failure_handler: usuario.login_success_handler.class
+    access_control:
+        administrador_login:
+            path: /admin/defult/login
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        administrador_default_login_check:
+            path: /admin/defult/login_check
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        administrador_area:
+            path: /admin/.*
+            roles: [ROLE_ADMINISTRADOR]
+
+        usuario_login:
+            path: /usuario/login
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        usuario_login_check:
+            path: /usuario/login_check
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        usuario_recordar_clave:
+            path: /usuario/recordarClave
+            roles: IS_AUTHENTICATED_ANONYMOUSLY
+        
+        usuario_area:
+            path: /usuario/.*
+            roles: [ROLE_USUARIO]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# security:
+#     encoders:
+#         administrador:
+#             class: AdministradorBundle\Entity\Admin
+#             algorithm: plaintext
+#         usuario:
+#             class: CertificadosBundle\Entity\Usuario
+#             algorithm: plaintext
+#     providers:
+#         administrador:
+#             entity: 
+#                 class: AdministradorBundle\Entity\Admin
+#                 property: username
+#         usuario:
+#             entity: 
+#                 class: CertificadosBundle\Entity\Usuario
+#                 property: nit
+
+#     firewalls:
+#         administrador_default_login:
+#              pattern:  ^/admin/default/login$
+#              security: false
+
+#         administrador_secured_area:
+#             pattern:    ^/admin/
+#             provider: administrador
+#             form_login:
+#                 check_path: /admin/default/login_check
+#                 login_path: /admin/default/login
+#                 default_target_path: /admin/defult/
+#                 always_use_default_target_path: true
+#                 success_handler: administrador.login_success_handler.class
+#                 failure_handler: administrador.login_success_handler.class
+
+#         #usuario_login:
+#         #     pattern:  ^/usuario/login$
+#         #     security: false
+
+#         usuario_secured_area:
+#             pattern:    ^/usuario*
+#             provider: usuario
+#             form_login:
+#                 check_path: /usuario/login_check
+#                 login_path: /usuario/login
+#                 default_target_path: /usuario/
+#                 always_use_default_target_path: true
+#                 success_handler: usuario.login_success_handler.class
+#                 failure_handler: usuario.login_success_handler.class
+#     access_control:
+#         administrador_login:
+#             path: /admin/defult/login
+#             roles: IS_AUTHENTICATED_ANONYMOUSLY
+#         administrador_default_login_check:
+#             path: /admin/defult/login_check
+#             roles: IS_AUTHENTICATED_ANONYMOUSLY
+#         administrador_area:
+#             path: /admin/.*
+#             roles: [ROLE_ADMINISTRADOR]
+
+#         usuario_login:
+#             path: /usuario/login
+#             roles: IS_AUTHENTICATED_ANONYMOUSLY
+#         usuario_login_check:
+#             path: /usuario/login_check
+#             roles: IS_AUTHENTICATED_ANONYMOUSLY
+#         usuario_area:
+#             path: /usuario/.*
+#             roles: [ROLE_USUARIO]

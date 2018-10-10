@@ -1,0 +1,11 @@
+administrador_login:
+    path:     /
+    defaults: { _controller: AdministradorBundle:Default:login }
+
+administrador_default:
+    resource: "@AdministradorBundle/Resources/config/routing/default.yml"
+    prefix:   /default
+
+admin_administrador:
+  resource: "@AdministradorBundle/Resources/config/routing/administrador.yml"
+  prefix:   /administrador

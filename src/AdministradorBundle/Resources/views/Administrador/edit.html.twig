@@ -1,0 +1,146 @@
+<script>
+$(document).ready(function(){
+    $('#formAdministrador').submit(function(){
+    
+            $.ajax({
+                url: '{{ path('administrador_update',{id:entity.id}) }}', 
+                data: $('#formAdministrador').serialize(),
+                type: 'post',
+                beforeSend: function(){
+                    savingAlert();
+                },
+                success: function(data){
+                setTimeout(function()
+                 {
+                        if(data.status == 1){
+                            ReloadGrid();
+                            savedAlert();
+                        }else{
+                            errorAlert()
+                        }
+                    },2500);  
+                },
+                error: function(){
+                    errorAlert()
+                       swal.close();
+                }
+        });
+        return false;
+    });
+    $('#formPermisos').submit(function(){
+        
+            $.ajax({
+                url: '{{ path('administradores_permisos',{id:idAdministrador}) }}', 
+                data: $('#formPermisos').serialize(),
+                type: 'post',
+                beforeSend: function(){
+                    savingAlert();
+                },
+                success: function(data){
+                setTimeout(function()
+                 {
+                    if(data.status == 1){
+                        ReloadGrid();
+                        $('#modal-app-edit').modal('toggle');
+                        savedAlert();
+                    }else{
+                        swal.close();
+                    }
+                    },2500);  
+                },
+                error: function(){
+                       swal.close();
+                }
+        });
+        return false;
+    });
+});
+</script>
+<div class="panel panel-info" style="">
+    <div class="widget-head clearfix">
+        {{ form_errors(form) }}
+        {{ form_errors(form.nombre) }}
+        {{ form_errors(form.username) }}
+        {{ form_errors(form.password) }}
+        {{ form_errors(form.email) }}
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="padding: 10px">
+            <form id="formAdministrador" class="form-horizontal" action="#" method="post">
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        {{ form_label(form.nombre) }}
+                    </div>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.nombre) }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        {{ form_label(form.username) }}
+                    </div>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.username) }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        {{ form_label(form.password) }}
+                    </div>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.password) }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        {{ form_label(form.email) }}
+                    </div>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.email) }}
+                    </div>
+                </div>
+                <br/>
+                {{ form_rest(form) }}
+                <div class="form-group row">
+                    <div class="col-sm-12 text-center">
+                        <button id="signupsubmit" class="btn btn-sm btn-success" type="submit"><i class="fa fa-save"></i> GUARDAR</button>
+                    </div>
+                </div>
+                    <br/>
+            </form>
+        </div>
+        <hr class="divider"></hr>
+        <div class="row">
+            <h3 class="text-center">Permisos</h3>
+            <form id="formPermisos" class="form-horizontal" action="#" method="post">
+                <table class="table table-bordered">
+                    <thead>
+                      <th class="text-center">Sección</th>
+                      <th class="text-center">Permitir</th>
+                      <th class="text-center">Edición Total</th>
+                      <th class="text-center">Modificación y Consulta</th>
+                      <th class="text-center">Consulta</th>
+                    </thead>
+                  <tbody>
+                    {% for permiso in permisos%}
+                      <tr>
+                        <th class="th">{{permiso.titulo}}</th>
+                        <td class="td text-center"><input type="checkbox" name="permisos[]" id="permisos_{{permiso.idPermisos}}" value="{{permiso.idPermisos}}" {% if permiso.idPermiso != '' %}checked{% endif %}/></td>
+                        <td class="td text-center"><input type="radio" name="TpoPermiso_{{permiso.idPermisos}}" id="TpoPermiso_{{permiso.idPermisos}}" value="1" {% if permiso.tipo == 1 %}checked="checked"{% endif %}/></td>
+                        <td class="td text-center"><input type="radio" name="TpoPermiso_{{permiso.idPermisos}}" id="TpoPermiso_{{permiso.idPermisos}}" value="2" {% if permiso.tipo == 2 %}checked="checked"{% endif %} /></td>
+                        <td class="td text-center"><input type="radio" name="TpoPermiso_{{permiso.idPermisos}}" id="TpoPermiso_{{permiso.idPermisos}}" value="3" {% if permiso.tipo == 3 %}checked="checked"{% endif %} /></td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                    <button id="submit" class="btn btn-sm btn-success text-center" type="submit"><i class="fa fa-save"></i> GUARDAR PERMISOS</button>
+                    </div>
+                </div>
+
+                
+            </form>
+        </div>
+    </div>
+</div>

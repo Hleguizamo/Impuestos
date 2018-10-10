@@ -1,0 +1,52 @@
+usuario:
+    pattern:  /
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:index" }
+usuario_xml:
+    pattern:  /xml
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:xml" }
+
+usuario_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:show" }
+
+usuario_new:
+    pattern:  /new
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:new" }
+
+usuario_create:
+    pattern:  /create
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:create" }
+    requirements: { _method: post }
+
+usuario_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:edit" }
+    options:
+      expose: true
+      
+usuario_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:update" }
+    requirements: { _method: post|put }
+
+usuario_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:delete" }
+    requirements: { _method: post|delete }
+    options:
+      expose: true
+
+usuario_cargarArchivo:
+    pattern:  /cargarArchivo
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:cargarArchivo" }
+
+usuario_subirArchivo:
+    pattern:  /subirArchivo
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:subirArchivo" }
+
+usuario_aprobarAsociado:
+    pattern:  /aprobarAsociado
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:aprobarAsociado" }
+usuario_aprobarAsociados:
+    pattern:  /aprobarAsociados
+    defaults: { _controller: "ImpuestosBackendBundle:Usuario:aprobarAsociados" }

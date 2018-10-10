@@ -1,0 +1,173 @@
+{% extends 'CertificadosBundle::layout.html.twig' %}
+{% block javascripts %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/copidrogas/js/reports.js') }}">
+<script>
+
+	jQuery().ready(function (){
+
+		$('#editarPerfil').click(function(){
+
+			location.href='{{ path('usuario_editar') }}';
+
+		});
+
+	});
+
+	var type='';
+	function getFormsApp(_type){
+
+		$('.reportes').html('<p class="text-center"><svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="spinnerMaterialDesign" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></p>');
+	    type=_type;
+	    $.get('{{path('usuario_filters')}}?tipo='+type, function(data){
+	    	$('.reportes').html(data);
+	    });
+	}
+
+	function requestPDFReport(ciudad,porcentaje,actividad,year){
+	    if(type == 'iva'){
+	        window.open(Routing.generate('usuario_pdf_iva',{city:ciudad,percent:porcentaje,year:year}), '_blank');
+	    } else if(type == 'ica'){
+	        window.open(Routing.generate('usuario_pdf_ica',{city:ciudad,percent:porcentaje,activity:actividad,year:year}), '_blank');
+	    } else if(type == 'renta'){
+	        window.open("reportes/rentapdf/null/"+porcentaje+"/"+actividad+"/"+year+'?_format=pdf', '_blank');
+	    }
+	}
+	function requestReport(ciudad,porcentaje,actividad,year){
+		$(".modal-dialog").animate({"width":$(window).width() - 30},600,'linear');
+		if(type == 'iva'){
+			$('#contenidoModal').html('CERTIFICADO DE RETENCION I.V.A');
+            $('#contenidoModal').load("reportes/iva/"+ciudad+"/"+porcentaje+"/"+year, function(){
+              $('#modal').modal('show');
+              swal.close();
+            });
+				
+		} else if(type == 'ica'){
+			$('#tituloModal').html('CERTIFICADO DE RETENCI&Oacute;N I.C.A.');
+			$('#contenidoModal').load("reportes/ica/"+ciudad+"/"+porcentaje+"/"+actividad+"/"+year, function(){
+              $('#modal').modal('show');
+              swal.close();
+            });
+			
+		} else if(type == 'renta'){
+			$('#tituloModal').html('CERTIFICADO DE RETENCIÓN EN LA FUENTE.');
+			$('#contenidoModal').load("reportes/renta/null/"+porcentaje+"/"+actividad+"/"+year, function(){
+              $('#modal').modal('show');
+              swal.close();
+            });
+		}
+	}
+</script>
+{% endblock %}
+{% block body %}
+<div class="container-fluid" style="margin-top: 5px">
+    <div class="row">
+    	<div class="col-sm-4">
+			<h5>
+				<p class="text-success"><strong>En Linea:</strong><p> <strong>{{users[0].Nombre}}</strong>
+			</h5>
+    	</div>
+    	<div class="col-md-8 text-right">
+			<div class="col-md-12">
+    	       <img src="{{ asset('images/logoCopidrogas.png') }}">
+			</div>
+		</div>
+
+    	<!-- <td class="text-center">
+    		<a target="_blank" href="/Manual-Impuestos.pdf">
+    					 <button class="btn btn-danger btn-xs" onclick="" type="button"><i class="fa fa-file-pdf-o"></i> Manual de la aplicación</button>
+    				</a>
+    	</td>
+    	        <td class="text-right text-top" width="220">
+    	            <div>
+    	                <img src="{{ asset('images/logoCopidrogas.png') }}">
+    	            </div>
+    	            <div class="text-right" style="padding: 20px">
+    	                <button id="btnCerrarSesion" type="button" class="btn btn-danger btn-xs" data-tooltip="{pos:'bottom'}" title="Cerrar sesi&oacute;n"><i class="fa fa-power-off"></i></button>
+    	            </div>
+    	        </td> -->
+    </div>
+</div>
+<div class="row text-center">
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-2">
+			<h5>
+				Nombre o Razón Social: <strong>{{users[0].Nombre}}</strong>
+			</h5>
+		</div>
+		<div class="col-md-2">
+			<div class="col-md-12">
+				<h5>
+					N.I.T: <strong>{{users[0].Nit}}</strong>
+				</h5>
+			</div>
+		</div>
+		<div class="col-md-2">
+				<div class="col-md-12">
+					<h5>
+						Dirección: <strong>{{users[0].Direccion}}</strong>
+					</h5>
+				</div>
+		</div>
+		<div class="col-md-2">
+				<div class="col-md-12">
+					<h5>
+						Ciudad - Municipio: <strong>{{users[0].Ciudad}}</strong>
+					</h5>
+				</div>
+		</div>
+		<div class="col-md-3 text-right">
+			<div class="col-md-12">
+				<button id="editarPerfil" type="button" class="btn btn-xs btn-info"><i class="fa fa-edit"></i> Mis datos</button>
+	
+				<a href="{{asset('Manual-Impuestos.pdf')}}" target="_blank" class="btn btn-xs btn-success" ><i class="fa fa-file-pdf-o"></i> Manual de la aplicación</a>
+				<button id="btnCerrarSesion" type="button" class="btn btn-danger btn-xs" data-tooltip="{pos:'bottom'}" title="Cerrar sesi&oacute;n"><i class="fa fa-power-off"></i></button>
+			</div>
+		</div>
+		
+			</div>
+		</div>
+	</div>
+</div>
+	<div class="row text-center">
+		<div class="col-md-4">
+			<button type="button"{% if certificadoIca == null %} class="btn btn-default disabled"{% else %}onclick="getFormsApp('ica')" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"{% endif %}><i class="fa fa-file-text-o fa-5x"></i> <h3>Consultar reporte I.C.A</h3></button>
+			
+		</div>
+		<div class="col-md-4">
+			<button type="button" {% if certificadoIva == null %} class="btn btn-default disabled"{% else %}onclick="getFormsApp('iva')" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"{% endif %}><i class="fa fa-file-text-o fa-5x"></i> <h3>Consultar reporte I.V.A</h3></button>
+			
+		</div>
+		<div class="col-md-4">
+			<button type="button" {% if certificadoRenta == null %} class="btn btn-default disabled"{% else %}onclick="getFormsApp('renta')" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"{% endif %}><i class="fa fa-file-text-o fa-5x"></i> <h3>Consultar reporte Retención</h3></button>
+		</div>
+	</div>
+	<div class="row">
+		<hr class="divider">
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-info"> 
+				<div class="panel-heading"> 
+					<h3 class="panel-title">Reportes</h3> 
+				</div> 
+				<div class="panel-body reportes"></div> 
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="tituloModal"></h4>
+	      </div>
+	      <div class="modal-body">
+	        <p id="contenidoModal"></p>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+{% endblock %}

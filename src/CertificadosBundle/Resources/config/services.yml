@@ -1,0 +1,19 @@
+parameters:
+  usuario.login_success_handler.class: CertificadosBundle\Listener\LoginListener
+
+services:
+  usuario.login_success_handler.class:
+    class: '%usuario.login_success_handler.class%'
+    public: false
+    arguments:  ['@service_container']
+  busqueda:
+        class: CertificadosBundle\Services\BusquedaGrilla
+        arguments: ["@service_container"]
+  utilidadesAsociado:
+        class: CertificadosBundle\Services\Util
+        arguments: ["@service_container"]
+  auditoria:
+        class: CertificadosBundle\Services\Util
+        arguments: ["@service_container"]
+  my_tcpdfusuario:
+    class: CertificadosBundle\Services\TCPDFExtended

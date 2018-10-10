@@ -1,0 +1,88 @@
+<?php
+
+namespace AdministradorBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Usuario
+ *
+ * @ORM\Table(name="usuario", uniqueConstraints={@ORM\UniqueConstraint(name="nit_2", columns={"nit"})})
+ * @ORM\Entity
+ */
+class Usuario
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nit", type="string", length=20, nullable=false)
+     */
+    private $nit = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=250, nullable=true)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direcciÃ³n", type="string", length=250, nullable=true)
+     */
+    private $direcciã³n;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tel", type="string", length=20, nullable=true)
+     */
+    private $tel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="representante", type="string", length=500, nullable=true)
+     */
+    private $representante;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mail", type="string", length=250, nullable=true)
+     */
+    private $mail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=15, nullable=true)
+     */
+    private $password;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="enabled", type="integer", nullable=true)
+     */
+    private $enabled = '1';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ciudad", type="string", length=70, nullable=true)
+     */
+    private $ciudad;
+
+
+}

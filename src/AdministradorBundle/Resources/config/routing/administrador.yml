@@ -1,0 +1,43 @@
+administrador:
+    path: /
+    defaults: { _controller: AdministradorBundle:Admin:index }
+
+administrador_xml:
+    path:  /xml
+    defaults: { _controller: "AdministradorBundle:Admin:xml" }
+administrador_show:
+    path:  /{id}/show
+    defaults: { _controller: "AdministradorBundle:Admin:show" }
+
+administrador_new:
+    path:  /new
+    defaults: { _controller: "AdministradorBundle:Admin:new" }
+
+administrador_create:
+    path:  /create
+    defaults: { _controller: "AdministradorBundle:Admin:create" }
+    requirements: { _method: post }
+
+administrador_edit:
+    path:  /{id}/edit
+    defaults: { _controller: "AdministradorBundle:Admin:edit" }
+    options:
+      expose: true
+
+administrador_update:
+    path:  /{id}/update
+    defaults: { _controller: "AdministradorBundle:Admin:update" }
+    requirements: { _method: post|put }
+
+administrador_delete:
+    path:  /{id}/delete
+    defaults: { _controller: "AdministradorBundle:Admin:delete" }
+    requirements: { _method: post|delete }
+    options:
+      expose: true
+
+administradores_permisos:
+    path:  /{id}/permisos
+    defaults: { _controller: "AdministradorBundle:Admin:permisos" }
+    options:
+      expose: true

@@ -1,0 +1,10 @@
+default_login:
+    path:     /
+    defaults: { _controller: CertificadosBundle:Default:login }
+
+default_login_check:
+    path: /login_check
+
+usuario_default_envio:
+  path:  /envio
+  defaults: { _controller: CertificadosBundle:Default:envio }

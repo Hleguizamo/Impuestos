@@ -1,0 +1,162 @@
+{% set permiso = app.session.get('permisos') %}
+<script type="text/javascript">
+jQuery().ready(function (){
+    $.jgrid.defaults.width = 780;
+    $.jgrid.defaults.responsive = true;
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+    jQuery("#Grilla").jqGrid({
+        url: '{{ path('usuario_xml') }}',
+        datatype: "xml",
+        colModel:[
+                {label: 'id',name:'id',index:'id', hidden: true},
+                {label: 'NIT',name:'nit', index:'a.nit' },
+                {label: 'RAZON SOCIAL',name:'nombre',index:'a.nombre' },
+                {label: 'DIRECCIÓN',name:'direccion',index:'a.direccion' },
+                {label: 'TELÉFONO',name:'tel',index:'a.tel' },
+                {label: 'REPRESENTATE',name:'representante',index:'a.representante' },
+                {label: 'EMAIL',name:'mail',index:'a.mail' },
+                {label: 'CLAVE',name:'password',index:'a.password' },
+                {label: 'ESTADO',name:'enabled',index:'a.enabled' },
+                {label: 'CIUDAD',name:'ciudad',index:'a.ciudad' }
+                {% if permiso['proveedores']['tipo'] == 1 or permiso['proveedores']['tipo'] == 2 %}
+                    ,{label: 'APRO.CAMBIOS',name:'aprobarCambios',index:'a.aprobacionCambio',align:'center'}
+                {% endif %}    
+        ],
+        rowNum: 50,
+        autowidth: true,
+        rowList: [100,200,300,400],
+        rowattr: function (rd) { return { 'class': 'pointer' }; },
+        pager: '#pGrilla',
+        sortname: 'a.id',
+        viewrecords: true,
+        sortorder: "desc",
+        height:$(document).height() - 210
+        {% if permiso['proveedores']['tipo'] == 1 or permiso['proveedores']['tipo'] == 2 %}
+            ,loadComplete: function(ids) {
+
+                $('.aprobar').click(function() { 
+
+                    var idProveedor=$(this).attr('id');
+                    $.ajax({
+                            url: '{{ path('usuario_aprobarAsociado') }}', 
+                            data: {'id':idProveedor, 'opcion':'previsualizacion'},
+                            type: 'post',
+                            beforeSend: function () {
+
+                                loadingAlert();
+
+                            },
+                            success: function(html) {
+
+                                //var html = data.html;
+
+                                $('#idModalLG').modal('toggle');
+                                $('#idTittleModalLg').empty().html('DATOS A APROVAR PROVEEDOR');
+                                $('#idBodyModalLg').empty().html(html);
+                                swal.close();
+
+                                // if(data.estado == 1){
+                                //    ReloadGrid()
+                                // }else{
+                                //     errorAlert();
+                                // }
+                            },
+                            error: function(){
+                                alert('hubo un error');
+                            }
+                    });
+                });
+            },
+            ondblClickRow: function(ids) {
+                var data = jQuery(this).getRowData(ids);
+                loadingAlert();
+                BootstrapDialog.show({
+                        title: 'Editar Proveedor',
+                        cssClass: 'modal-prov-edt',
+                        id: 'modal-prov-edt',
+                        type: BootstrapDialog.TYPE_INFO, 
+                        message: $('<div></div>').load(Routing.generate('usuario_edit', { id: data.id}))
+                    });
+                swal.close();
+            }
+        {% endif %}
+    }).navGrid('#pGrilla',{edit:false,add:false,del:false},{},{},{},{multipleSearch:true});
+    {% if permiso['proveedores']['tipo'] == 1 %}
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-success"><i class="fa fa-plus-square-o"></i> <span>', title:"Nuevo", buttonicon:"none", onClickButton:function(){
+              loadingAlert();
+              BootstrapDialog.show({
+                        title: 'Nuevo Proveedor',
+                        cssClass: 'modal-prov-new',
+                        id: 'modal-prov-new',
+                        type: BootstrapDialog.TYPE_INFO, 
+                        message: $('<div></div>').load('{{path('usuario_new')}}')
+                    });
+                swal.close();
+          }
+      });
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-info"><i class="fa fa-upload"></i> <span>',title:"Cargar Provedores",buttonicon:"none", onClickButton:function(){
+              loadingAlert();
+              BootstrapDialog.show({
+                        title: 'Cargar Proveedor',
+                        cssClass: 'modal-prov-chg',
+                        id: 'modal-prov-new',
+                        type: BootstrapDialog.TYPE_INFO, 
+                        message: $('<div></div>').load('{{path('usuario_cargarArchivo')}}')
+                    });
+                swal.close();
+          }
+      });
+    {% endif %}
+    {% if permiso['proveedores']['tipo'] == 1 or permiso['proveedores']['tipo'] == 2 %}
+        jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-success"><i class="fa fa-check"></i> </span>',title:"Apro.cambios proveedores", buttonicon:"none", onClickButton:function(){
+                $.ajax({
+                        url: '{{ path('usuario_aprobarAsociados') }}',
+                        success: function(data){
+                            if(data.estado == 1){
+                               ReloadGrid();
+                            }else if(data.estado == 2){
+                                    aprobAlert();
+                            }else{
+                                errorAlert();
+                            }
+                        },
+                        error: function(){
+                            errorAlert();
+                        }
+                });
+            }
+        });
+    {% endif %}
+    {% if permiso['proveedores']['tipo'] == 1 %}
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-danger"><i class="fa fa-trash"></i> </span>', title: "Eliminar", buttonicon:"none",onClickButton:function(){
+              var gsr = jQuery("#Grilla").jqGrid('getGridParam','selrow');
+              if(gsr){
+                  dataRow = jQuery("#Grilla").getRowData(gsr);
+                  confirmCompountAlert(dataRow.nombre,dataRow.id,'usuario_delete');
+             }else{
+                msg='Seleccione Una Fila';
+                deleteAlert();}
+          }
+      });
+    {% endif %}
+});
+function ReloadGrid(){jQuery("#Grilla").trigger("reloadGrid");}
+
+
+    function alertSuccess (msj) {
+
+        setTimeout(function(){
+                               
+            swal({  
+                title: msj,
+                text: "",
+                timer: 1200,
+                showConfirmButton: false,
+                type: "success" 
+            });
+
+        }, 900); 
+
+    }//end function
+
+</script>

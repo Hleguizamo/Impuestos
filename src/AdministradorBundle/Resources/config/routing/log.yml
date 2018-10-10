@@ -1,0 +1,6 @@
+log:
+    path:  /
+    defaults: { _controller: "AdministradorBundle:Log:index" }
+log_xml:
+    path:  /xml
+    defaults: { _controller: "AdministradorBundle:Log:xml" }

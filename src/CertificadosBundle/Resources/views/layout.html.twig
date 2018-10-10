@@ -1,0 +1,51 @@
+{% extends '::base.html.twig' %}
+{% block title %}COPIDROGAS - IMPUESTOS{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/css/bootstrapWa.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/noty/animate.css') }}" />
+     <!-- Alertas Personalizadas con SweetAlert -->
+    <link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}" />
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script language="javascript">if(history.forward(1)){history.replace(history.forward(1));}</script>
+    <script src="{{ asset('/js/jqgrid/jquery-1.11.0.min.js') }}"></script>
+    <script src="{{ asset('/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+
+    
+    <script type="text/javascript">
+        jQuery().ready(function (){
+            $('#btnCerrarSesion').click(function (){
+                       swal({
+                                title: "Salir",
+                                text: "¿Realmente desea Salir?",
+                                layout : 'center',
+                                showConfirmButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Si, Salir',
+                                cancelButtonText: 'No, Permanecer',
+                                type : 'warning',
+                              },function(isConfirm){
+                                 if(isConfirm){
+                                    swal.close();
+                                    location.href="{{ path('usuario_logout') }}";
+                                 }else{
+                                     swal.close();
+                                 }
+
+                              }
+
+                              );
+
+                    });
+        });
+    </script>
+{% endblock %}
+{% block body %}
+{% endblock %}

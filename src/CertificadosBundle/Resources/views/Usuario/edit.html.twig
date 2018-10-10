@@ -1,0 +1,263 @@
+{% extends 'CertificadosBundle::layout.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/copidrogas/js/reports.js') }}">
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#certificados').click(function(){
+            location.href='{{ path('usuario_usuario') }}';
+        });
+        $("input[type=password]").each(function(i,v){
+        var input=$(v);var last=input.val();var pop={timer:null,letter:null,clear:function(){if(pop.timer){window.clearTimeout(pop.timer);}if (pop.letter){pop.letter.remove();}},show:function(letter, position){pop.clear();pop.letter=$("<div/>").addClass("letter").css("marginTop", -20).animate({marginTop:-40}).insertBefore(input);pop.letter.css("marginLeft", Math.min((input.width()-pop.letter.width()),(position*8))+"px");if(letter==" "){pop.letter.html("&nbsp;");}else{pop.letter.text(letter);}pop.timer=window.setTimeout(function(){pop.letter.fadeOut();},500);}};input.keyup(function(e){var current = input.val();if (current.length < last.length) {last = input.val();return;}for(var i=0;i<Math.min(last.length,current.length);i++){if(current[i]!=last[i]){pop.show(current.charAt(i), i);last = input.val();return;}}if(current.length > last.length){var end = current.length - 1;pop.show(current.charAt(end), end);}last=input.val();});});
+        
+            $('#formProveedor').submit(function(){
+                var error = 0, error_txt = "Verifique:<ul>";
+                if ($('#impuestos_certificadosbundle_usuario_passwordCambio').val()) {
+                    if ($('#impuestos_certificadosbundle_usuario_passwordCambio').val() != $('#repetirNuevaClave').val()) {
+                        $('#impuestos_certificadosbundle_usuario_passwordCambio').addClass('form-danger');
+                        $('#repetirNuevaClave').addClass('form-danger');
+                        error++;
+                        error_txt += "<li>La nueva clave y la cofirmacion de clave son diferentes.</li>";
+                    }
+                    if (!ChekPass($('#impuestos_certificadosbundle_usuario_passwordCambio').val())) {
+                        $('#impuestos_certificadosbundle_usuario_passwordCambio').addClass('form-danger');
+                        error++;
+                        error_txt += "<li>Introduzca al menos una may&uacute;scula, una min&uacute;scula y un n&uacute;mero.</li>";
+                    }
+                    if ($('#impuestos_certificadosbundle_usuario_passwordCambio').val().length < 8) {
+                        $('#impuestos_certificadosbundle_usuario_passwordCambio').addClass('form-danger');
+                        error++;
+                        error_txt += "<li>La clave debe tener una longitud m&iacute;nima de 8 caracteres</li>";
+                    }
+                    if ($('#impuestos_certificadosbundle_usuario_passwordCambio').val() == $('#impuestos_certificadosbundle_usuario_nit').val()) {
+                        $('#impuestos_certificadosbundle_usuario_passwordCambio').addClass('form-danger');
+                        error++;
+                        error_txt += "<li>La clave no puede ser el nit</li>";
+                    }
+                }
+                    
+                if (error == 0) {
+                    $.ajax({
+                        url: '{{path('usuario_actualizarUsuario',{id:entity.id})}}', 
+                        method: 'POST',
+                        data: $('#formProveedor').serialize(),
+                        success: function(data){
+                            if(data.status == 1){
+                                $('#impuestos_certificadosbundle_usuario_passwordCambio').removeClass('form-danger');
+                                $('#repetirNuevaClave').removeClass('form-danger');
+                                $('#result').html('Nuevos datos guardados los cambios se reflejaran cuando el administrador los apruebe');
+                            }else{
+                                $('#result').html('hubo un error por vuelva a intentarlo');
+                            }
+                        },
+                        error: function(){}
+                    });
+                    return false;
+                }else{
+                    $('#result').html(error_txt + '</ul>');
+                    $('#result').animate({
+                        opacity: 0.3
+                    }, 0, function() {
+                        $( this ).after( 
+                            $('#result').animate({
+                                opacity: 1
+                            }, 1000)
+                        )
+                    });
+                    return false;
+                }
+            });
+        $('.form-control').blur(function(){if($(this).is('[type=text]')){$(this).val($(this).val().toUpperCase());}});
+    });
+    function ChekPass(cadena) {
+        var minuscula = false;
+        var mayuscula = false;
+        var numero = false;
+        var caracter = false;
+        //recorre cada caracter de la cadena  
+        for (i = 0; i < cadena.length; i++) {
+            //si el codigo ASCII es el de las minusculas, pone a true el flag de minusculas  
+            if (cadena.charCodeAt(i) >= 97 && cadena.charCodeAt(i) <= 122) {
+                minuscula = true;
+                //si el codigo ASCII es el de las mayusculas, pone a true el flag de mayusculas  
+            } else if (cadena.charCodeAt(i) >= 65 && cadena.charCodeAt(i) <= 90) {
+                mayuscula = true;
+                //si el codigo ASCII es el de loss numeros, pone a true el flag de numeros  
+            } else if (cadena.charCodeAt(i) >= 48 && cadena.charCodeAt(i) <= 57) {
+                numero = true;
+                //si no es ninguno de los anteriores, a true el flag de caracter simbolico  
+            } else
+                caracter = true;
+        }
+        if (numero == true && minuscula == true && mayuscula == true) {
+            return true;    //cambiar false por true para hacer el submit  
+        } else {
+            return false;
+        }
+    } 
+</script>
+{% endblock %}
+{% block body %}
+<style type="text/css">
+  .letter{background-color:white;border-color:#F1F1F1 #D1D1D1 #B1B1B1 #E1E1E1;border-style:solid;border-radius:2px;border-width:2px 4px 5px 3px;box-shadow:0 0 5px rgba(0,0,0,0.5);color:#696969;display:inline-block;font-family: helvetica,arial,sans-serif;min-width:25px;padding:1px 0;position:absolute;text-align:center;text-shadow:none;white-space:nowrap;}
+</style>
+<table class="table table-condensed tableCabecera">
+    <tr>
+        <td class="text-right text-top" width="220" style="padding: 10px">
+            <div>
+                <img src="{{ asset('images/logoCopidrogas.png') }}">
+            </div>
+            <div class="text-right">
+                <button id="btnCerrarSesion" type="button" class="btn btn-danger btn-xs" data-tooltip="{pos:'bottom'}" title="Cerrar sesi&oacute;n"><i class="fa fa-power-off"></i></button>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div class="panel panel-info">
+    <div class="panel panel-body">
+        <div class="col-md-12">
+            <button id="certificados" type="button" class="btn btn-primary"><i class="fa fa-mail-reply"></i> Certificados</button>
+        </div>
+        <form class="form-horizontal infoclient_container" id="formProveedor">
+            <div class="container">
+                <div class="row">
+                <div class="col-xs-3">
+                    {{ form_label(form.nit) }}
+                </div>
+                <div class="col-xs-3">
+                    {{ form_widget(form.nit, { 'attr': {'class': 'form-control'}} )}}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.nombre) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.nombre) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.nombreCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.nombreCambio) }}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.direccion) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.direccion) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.direccionCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.direccionCambio) }}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.tel) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.tel) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.telCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.telCambio) }}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.representante) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.representante) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.representanteCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.representanteCambio) }}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.mail) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.mail) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.mailCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.mailCambio) }}
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.password) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.password) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.passwordCambio) }}<br><label for="repetirNuevaClave">Confirmación Nueva Contraseña</label>
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.passwordCambio) }}<br><input class="form-control" type="password" name="repetirNuevaClave" id="repetirNuevaClave">
+                </div>
+                </div>
+                
+                <div class="form-row">
+                <div class="col-md-3">
+                    {{ form_label(form.ciudad) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.ciudad) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_label(form.ciudadCambio) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_widget(form.ciudadCambio) }}
+                </div>
+                </div>
+            </div>
+                <div class="col-md-12">
+                    {{ form_rest(form) }}
+                    <div class="panel panel-default">
+                        <div class="panel-body text-center">
+                            <h4>Los cambios están sujetos a la revision por el Administrador de la aplicación, una vez validados los datos serán aprobados y hasta entonces se publicaran en los certificados que exporte..</h4>
+                        </div>
+                    </div>
+                    <br/>
+                    <span id="result"></span>
+                </div>
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <input id="signupsubmit" name="signup" type="submit" value="GUARDAR" class="btn btn-success"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+    

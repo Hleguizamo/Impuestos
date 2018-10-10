@@ -1,0 +1,52 @@
+administrador_default_login:
+    path:     /login
+    defaults: { _controller: AdministradorBundle:Login:login }
+
+administrador_default_recordarClave:
+    path:     /recordarClave
+    defaults: { _controller: AdministradorBundle:Login:reminder }
+
+administrador_default_login_check:
+    path: /login_check
+
+admin_loginError:  
+    path:  /loginError
+    defaults: { _controller: ImpuestosBackendBundle:Login:index }
+
+admin_default_logout:  
+    path:  /logout
+    defaults: { _controller: AdministradorBundle:Login:logout }
+
+admin_usuario:
+  resource: "@AdministradorBundle/Resources/config/routing/usuario.yml"
+  prefix:   /usuario
+  
+  
+admin_loaddata:
+  path:  /loaddata
+  defaults: { _controller: AdministradorBundle:Administracion:loaddata }
+
+download_plantilla_iva:
+  path:     /download_plantilla_iva
+  defaults: { _controller: "AdministradorBundle:Administracion:downloadPlantillaIva" }
+
+admin_log:
+  resource: "@AdministradorBundle/Resources/config/routing/log.yml"
+  prefix:   /log
+
+#rutas admin carga de data
+admin_usuarios_create:
+  path:  /uploadfile
+  defaults: { _controller: AdministradorBundle:Administracion:uploadfile }
+
+admin_loadiva:
+  path:  /loadiva
+  defaults: { _controller: AdministradorBundle:Administracion:loadiva }
+    
+admin_loadica:
+  path:  /loadica
+  defaults: { _controller: AdministradorBundle:Administracion:loadica }
+    
+admin_loadrenta:
+  path:  /loadrenta
+  defaults: { _controller: AdministradorBundle:Administracion:loadrenta }

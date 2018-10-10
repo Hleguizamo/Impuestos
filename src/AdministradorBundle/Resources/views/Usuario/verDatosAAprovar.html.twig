@@ -1,0 +1,90 @@
+<div class="container-fluid">
+
+	<div class="row">
+
+		<div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+
+			<table class="table table-bordered">
+				<tr>
+					<th colspan="2" class="text-center">INFORMACIÓN ANTERIOR</th>
+					<th colspan="2" class="text-center bg-primary">NUEVA INFORMACIÓN PARA APROBACIÓN</th>
+				</tr>
+				<tr>
+					<th>NOMBRE</th><td>{{entity.nombre}}</td> <th class="bg-primary">NOMBRE</th><td>{{entity.nombreCambio}}</td>
+				</tr>
+				<tr>
+					<th>DIRECCIÓN</th><td>{{entity.direccion}}</td> <th class="bg-primary">DIRECCIÓN</th><td>{{entity.direccionCambio}}</td>
+				</tr>
+				<tr>
+					<th>TELEFÓNO</th><td>{{entity.tel}}</td> <th class="bg-primary">TELEFÓNO</th><td>{{entity.telCambio}}</td>
+				</tr>
+				<tr>
+					<th>REPRESENTANTE</th><td>{{entity.representante}}</td> <th class="bg-primary">REPRESENTANTE</th><td>{{entity.representanteCambio}}</td>
+				</tr>
+				<tr>
+					<th>EMAIL</th><td>{{entity.mail}}</td> <th class="bg-primary">EMAIL</th><td>{{entity.mailCambio}}</td>
+				</tr>
+				<tr>
+					<th>CIUDAD</th><td>{{entity.ciudad}}</td> <th class="bg-primary">CIUDAD</th><td>{{entity.ciudadCambio}}</td>
+				</tr>				
+			</table>
+
+		</div>
+
+	</div><!-- end row -->
+
+	<div class="row" style="margin-top:15px;">
+
+		<div class="col-md-12 col-xs-12 col-sm-12 col-lg-12 text-center">
+
+			<button class="btn btn-primary" type="button" id="btnAprobarCambios">APROBAR CAMBIOS</button>
+
+		</div>
+
+	</div>
+
+</div><!-- end container -->
+<script type="text/javascript">
+
+	$('#btnAprobarCambios').click(function() { 
+
+        var idProveedor='{{entity.id}}';
+        $.ajax({
+                url: '{{ path('usuario_aprobarAsociado') }}', 
+                data: {'id':idProveedor, 'opcion':'aprobar'},
+                type: 'post',
+                beforeSend: function () {
+
+                	loadingAlert();
+
+                },
+                success: function(data) {
+
+                    if(data.estado == 1){
+                       ReloadGrid()
+                    }else{
+                        errorAlert();
+                    }
+
+                    $('#idModalLG').modal('toggle');
+                    alertSuccess ('Registro editado correctamente');
+
+                },
+                error: function(){
+                    alert('hubo un error');
+                }
+
+        });//end ajax
+
+    });//end click
+
+</script>
+
+
+
+
+
+
+
+
+

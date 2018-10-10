@@ -1,0 +1,229 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+        <!--[if lt IE 9]>
+            <script src="{{ asset('bundles/uicore/javascripts/vendor/html5shiv.js') }}"></script>
+        <![endif]-->
+        <script src="{{ asset('bundles/uicore/javascripts/custom/Administradors.js') }}"></script>
+{% endblock %}
+{% block body %}
+    {% include 'AdministradorBundle:Administracion:header.html.twig' %}
+        <div class="sidebar-background">
+            <div class="primary-sidebar-background"></div>
+        </div>
+        <!-- Menu principal -->
+        <div id="menu_left" class="primary-sidebar">
+            {% include 'AdministradorBundle:Administracion:menu.html.twig' %}
+        </div>
+        <!-- wrapper principal -->
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="area-top clearfix">
+                        <div class="pull-left header">
+                            <h3 class="title"><i class="icon-dashboard"></i>Administración de usuarios</h3>
+                            <h5>Consulte , adicione y edite usuarios</h5>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="container-fluid padded">
+                <hr class="divider">
+                    <ul class="action-nav-normal rounded">
+                        <li class="action-nav-button">
+                          <a href="javascript:;" id="create_form_launcher" class="tip" title="" data-original-title="Crear administrador">
+                            <i class="icon-file-alt"></i>
+                          </a>
+                        </li>
+
+                        <li class="action-nav-button">
+                          <a href="javascript:;" id="query_form_launcher" class="tip" title="" data-original-title="Consultar administradores">
+                            <i class="icon-user"></i>
+                          </a>
+                        </li>
+                      </ul>
+                 <hr class="divider">
+			</div>
+		  	<div class="container-fluid padded form-user">
+		    	<div class="row-fluid">
+  					<div class="span12 hidden_field" id="create_form">
+    					<div class="row-fluid">
+						  <div class="span12" >
+						    <div class="box">
+						      <div class="box-header">
+						        <span class="title">Formulario creación/edición administradores</span>
+						      </div>
+						      
+						      <div class="box-content">
+						      	<form class="fill-up">
+						      		<div class="row-fluid">
+						      			<div class="span6">
+								      		<ul class="padded separate-sections">
+								      			<li class="input">Datos de administrador</li>
+								      			<li class="input hidden_field" id="loader_holder">
+								                   <img class="loader" src="{{asset('images/loader.GIF')}}">  
+								                   <label class="loader_label">Cargado<p id="loader_percent"></p></label>
+								                </li>
+								                <li class="input">
+								                  <input id="mail" type="text" placeholder="Email">
+								                </li>
+												<li class="input">Acceso</li>
+								      			<li class="input">
+								                  <input id="password" type="password" placeholder="Contraseña">
+								                </li>
+								                <li class="input">
+								                  <input id="cpassword" type="password" placeholder="Confirmar contraseña">
+								                </li>
+								                <li id="pwd_message" class="input hidden_field">
+								                  <b><p>Las contraseñas deben coincidir</p></b>
+								                </li>
+								                
+								            </ul>
+								      	</div>
+								      	<div class="span6">
+								      		<ul class="padded separate-sections">
+								            </ul>
+								      	</div>
+						      		</div>
+						      	</form>
+								<div class="form-actions">
+						            <button id="send_create_user" type="submit" class="btn btn-blue">Guardar</button>
+						            <button id="send_cancel" type="button" class="btn btn-default">Cancelar</button>
+					          	</div>
+						      </div>					      
+						    </div>
+						  </div>
+    					</div>	
+    				</div>
+    			</div>
+			</div>
+		  	<div id="query_form" class="">
+		  		<div class="container-fluid padded query">
+			    	<div class="row-fluid">
+                                    <div class="span12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                        <span class="title">Administradores registrados</span></div>
+                                        <div class="box-content">
+                                            <div id="">
+                                                <table cellpadding="0" cellspacing="0" border="0" class="dTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th><div>Acciones</div></th>
+                                                                <th><div>Email</div></th>
+                                                                <th><div>Contraseña</div></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for administrador in administradores %}
+                                                            <tr>
+                                                                <td>
+                                                                  <div class="btn-group">
+                                                                    <button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+                                                                    <ul class="dropdown-menu">
+                                                                      <li><a href="javascript:editUser({{administrador.id}});">Editar</a></li>
+                                                                      <li><a href="javascript:deleteUser({{administrador.id}});;">Eliminar</a></li>
+                                                                    </ul>
+                                                                  </div>
+                                                                </td>
+                                                                <td>{{administrador.email}}</td>
+                                                                <td>{{administrador.password}}</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+		</div>
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#modal-simple" id="modal_launcher" class="hidden_field"> </a>
+		<div id="modal-simple" class="modal hide fade">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			    <h6 id="modal-tablesLabel">Información de usuario</h6>
+			  </div>
+			  <div class="content">
+				
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			  </div>
+		</div>
+		
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#alert-simple" id="alert_launcher" class="hidden_field"> </a>
+		<div id="alert-simple" class="modal hide fade">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h6 id="modal-tablesLabel">Mensaje</h6>
+		  </div>
+		  <div class="modal-body" id="alert-message">
+		    
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn btn-blue" data-dismiss="modal">Cerrar</button>
+		  </div>
+		</div>
+		
+		<div id="page_loader">
+    		<div><img src="{{asset('bundles/uicore/images/pageloader.gif')}}" /></div>
+    	</div>
+		
+		<a data-toggle="modal" href="#modal-simple" id="modal_launcher" class="hidden_field"> </a>
+		<div id="modal-simple" class="modal hide fade">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			    <h6 id="modal-tablesLabel">Mensaje</h6>
+			  </div>
+			  <div class="modal-body">
+				_mensaje_
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			  </div>
+		</div>
+		
+		<!-- MODAL LOOK QUERY USER -->
+		<a data-toggle="modal" href="#look-simple" id="look_launcher" class="hidden_field"> </a>
+		<div id="look-simple" class="modal hide fade">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h6 id="modal-tablesLabel">Información usuario</h6>
+		  </div>
+		  <div class="modal-body" id="alert-message">
+		    	<div class="box-section news"> 
+					<ul class="user-info">
+						<li class="title_name"><div id="" class="news-title">NIT: </div></li>
+						<li class="title_name"><div id="lnit" class="news-title">  </div></li>
+						<li><b>Nombre:</b> </li>
+						<ll><p id="lnombre" ></p></ll>
+						<li><b>Dirección:</b> </li>
+						<li><p id="ldireccion" ></p></li>
+						<li><b>Teléfono:</b> </li>
+						<li><p id="ltel" ></p></li>
+						<li><b>Ciudad:</b> </li>
+						<li><p id="lciudad" ></p></li>
+						<li><b>Mail:</b> </li>
+						<li><p id="lmail" ></p></li>
+						<li><b>Contraseña:</b></li>
+						<li><p id="lpassword" ></p></li>
+					</ul>
+				</div>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn btn-blue" data-dismiss="modal">Cerrar</button>
+		  </div>
+		</div>
+		
+		<footer>
+		</footer>
+	</div>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends 'CertificadosBundle::layout.html.twig' %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}
+{% block body %}
+<table class="table table-condensed text-nowrap tabla">
+    <tr>
+        <td rowspan="2" class="text-right text-top" width="220">
+            <div>
+                <img src="{{ asset('images/logoCopidrogas.png') }}">
+            </div>
+            <div class="text-right">
+                <button id="btnCerrarSesion" type="button" class="btn btn-danger" data-tooltip="{pos:'bottom'}" title="Cerrar sesi&oacute;n">
+                    <i class="fa fa-power-off"></i></button>
+            </div>
+        </td>
+    </tr>
+</table>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <form class="panel panel-box form form-horizontal" method="POST" action="{{ path('usuario_login_check') }}" id="cambiaClaveForm" autocomplete="off">
+      <article class="comment">
+          <div class="comment-body">
+              <p class="text-primary">
+                Por seguridad la aplicaci&oacute;n solo le permite 3 intentos de cambio de clave, si usted intenta realizar el cambio las tres veces permitidas y en los tres intentos genera error, se cerrara la sesión obligandolo a autenticarse.
+              </p>
+          </div>
+      </article><br>
+      <div class="row">
+                <div class="col-md-3">
+                  <label for="form-h-it" class="form-label">Clave Actual</label>
+                </div>
+                <div class="col-md-9">
+                    <input type="password" placeholder="Clave Actual" name="clave_actual" id="clave_actual" maxlength="20" class="form-control form-control-sm Contar" required/><br />
+                    <span id="clave_actual_contar" class="texto_informativo_peq"></span><br />
+                    <span id="Inf_clave_actual" class="texto_informativo_peq"></span>
+                </div>
+        </div>
+      <div class="row">
+        <div class="col-md-3">
+          <label for="form-h-it" class="form-label">Nueva Clave</label>
+        </div>
+        <div class="col-md-9">
+          <input type="password" placeholder="Nueva Clave" required value="" maxlength="20" name="nuevaClave" id="nuevaClave" class="form-control form-control-sm Contar">
+          <div class="text-small text-warning" id="nuevaClave_contar">&nbsp;</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <label for="form-h-it" class="form-label">Confirme la Nueva Clave</label>
+        </div>
+        <div class="col-md-9">
+          <input type="password" placeholder="Confirmación de Clave" required value="" maxlength="20" name="confirmacionClave" id="confirmacionClave" class="form-control form-control-sm Contar">
+          <div class="text-small text-warning" id="confirmacionClave_contar">&nbsp;</div>
+        </div>
+      </div>
+        <div class="form-row text-center">
+            <button type="submit" class="btn btn-primary">CAMBIAR CLAVE</button>
+        </div>
+       <div class="panel panel-box panel-box-danger">
+            <h3 class="panel-title text-danger"><i class="icon-warning"></i> IMPORTANTE</h3>
+            <p class="text-danger text-small">
+              Ingrese la clave actual, nueva clave y la confirmación de la misma, adicionalmente tenga en cuenta que la clave debe estar compuesta por:
+              <ul class="text-danger text-small">
+                <li>Al menos una mayúscula, una minúscula y un número.</li>
+                <li>Longitud mínima de 8 caracteres</li>
+              </ul>
+            </p>
+        </div>
+    </form>
+  </div>
+</dev>
+<style type="text/css">
+  .letter{background-color:white;border-color:#F1F1F1 #D1D1D1 #B1B1B1 #E1E1E1;border-style:solid;border-radius:2px;border-width:2px 4px 5px 3px;box-shadow:0 0 5px rgba(0,0,0,0.5);color:#696969;display:inline-block;font-family: helvetica,arial,sans-serif;min-width:25px;padding:1px 0;position:absolute;text-align:center;text-shadow:none;white-space:nowrap;}
+</style>
+<script src="{{ asset('/js/jqgrid/jquery-1.11.0.min.js') }}"></script>
+<script>
+  var control=0;
+  var N_cont=0;
+  var delay = 2000;
+  $(document).ready(function(){
+      $("input[type=password]").each(function(i,v){
+        var input=$(v);
+        var last=input.val();var pop={timer:null,letter:null,clear:function(){if(pop.timer){window.clearTimeout(pop.timer);}if (pop.letter){pop.letter.remove();}},show:function(letter, position){pop.clear();pop.letter=$("<div/>").addClass("letter").css("marginTop", -20).animate({marginTop:-40}).insertBefore(input);pop.letter.css("marginLeft", Math.min((input.width()-pop.letter.width()),(position*8))+"px");if(letter==" "){pop.letter.html("&nbsp;");}else{pop.letter.text(letter);}pop.timer=window.setTimeout(function(){pop.letter.fadeOut();},500);}};input.keyup(function(e){var current = input.val();if (current.length < last.length) {last = input.val();return;}for(var i=0;i<Math.min(last.length,current.length);i++){if(current[i]!=last[i]){pop.show(current.charAt(i), i);last = input.val();return;}}if(current.length > last.length){var end = current.length - 1;pop.show(current.charAt(end), end);}last=input.val();});});
+        $("input[type=password]").each(function(index,input){
+          input=$(input);
+          $('<div/>').append($("<input type='checkbox' />").attr("id", ("check_"+index)).click(function(){
+          var change = $(this).is(":checked") ? "text" : "password";
+          var rep =$("<input type='" + change + "' />").attr("id", input.attr("id")).attr("name", input.attr("name")).val(input.val()).insertBefore(input);input.remove();input = rep;}));
+        });
+      $('.Contar').keyup(function(){elemento=this.name;$('#'+elemento+'_contar').html('&nbsp;&nbsp;&nbsp;'+(parseInt($('#'+elemento).attr("maxlength"))-$('#'+elemento).val().length)+' Caracteres disponibles')});
+      $('#cambiaClaveForm').submit(function(){
+        if($('#clave_actual').val()!="" && $('#clave').val()!="" && $('#nuevaClave').val()!="" && $('#nuevaClave').val().length>=8 && $('#nuevaClave').val()==$('#confirmacionClave').val()){
+          $.ajax({
+             type:"POST",
+             url:'{{ path('usuario_cambiarClave') }}',
+             data:$("#cambiaClaveForm").serialize(),
+             success:function(data){
+              console.log(data);
+                 if(data.status==1){
+                  if(data.status===99){
+                      swal({
+                                title: "Información",
+                                text: 'La sesión ha caducado, esto se debe a que hubo mas de 18 minutos de inactividad.',
+                                showConfirmButton: true,
+                                confirmButtonText: 'Aceptar',
+                                type : 'danger',
+                              },function(isConfirm){
+                                 if(isConfirm){
+                                    swal.close();
+                                    location.href="{{ path('usuario_logout') }}";
+                                 }else{
+                                     swal.close();
+                                 }
+                              });
+                  }else{
+                    swal({
+                        title: 'Información',
+                        text: 'La clave se cambio correctamente.',
+                        type: 'success',
+                        showConfirmButton: false,
+                        timer: 2000
+                      });
+                    setTimeout(function(){
+                      location.href='{{path('usuario_logout')}}';
+                    },delay);
+                    
+                  }
+                 }else{
+                  swal({
+                      title: "Información",
+                      text: data.error,
+                      showConfirmButton: true,
+                      confirmButtonText: 'Aceptar',
+                      type : 'danger',
+                    },function(isConfirm){
+                        if(isConfirm){
+                          swal.close();
+                        }else{
+                            swal.close();
+                        }
+                    });
+                 }
+             },error:function(){
+              swal({
+                      title: "Información",
+                      text: 'Error al confirmar datos, por favor intente nuevamente.',
+                      showConfirmButton: true,
+                      confirmButtonText: 'Aceptar',
+                      type : 'danger',
+                    },function(isConfirm){
+                        if(isConfirm){
+                          swal.close();
+                        }else{
+                            swal.close();
+                        }
+                    });
+              }
+           });
+        }else{
+          swal({
+              title: "Información",
+              text: 'Valide que los datos ingresados cumplan con las condiciones de cambio de clave.',
+              showConfirmButton: true,
+              confirmButtonText: 'Aceptar',
+              type : 'danger',
+            },function(isConfirm){
+                if(isConfirm){
+                  swal.close();
+                }else{
+                    swal.close();
+                }
+            });
+        }
+        return false;
+      });
+  });
+</script>
+{% endblock %}

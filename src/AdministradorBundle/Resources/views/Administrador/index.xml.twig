@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rows>
+    <page>{{ pagina }}</page>
+    <total>{{ maxPagina }}</total>
+    <records>{{ numRegistros }}</records>
+    {% for entity in entities %}
+    <row id="{{ entity.id }}">
+        <cell>{{ entity.id }}</cell>
+        <cell><![CDATA[{{ entity.nombre }}]]></cell>
+        <cell><![CDATA[{{ entity.email }}]]></cell>
+        <cell><![CDATA[{{ entity.username }}]]></cell>
+        <cell><![CDATA[{{ entity.password }}]]></cell>
+    </row>
+    {% endfor %}
+</rows>

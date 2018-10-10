@@ -1,0 +1,52 @@
+usuario:
+    path:  /
+    defaults: { _controller: "AdministradorBundle:Usuario:index" }
+usuario_xml:
+    path:  /xml
+    defaults: { _controller: "AdministradorBundle:Usuario:xml" }
+
+usuario_show:
+    path:  /{id}/show
+    defaults: { _controller: "AdministradorBundle:Usuario:show" }
+
+usuario_new:
+    path:  /new
+    defaults: { _controller: "AdministradorBundle:Usuario:new" }
+
+usuario_create:
+    path:  /create
+    defaults: { _controller: "AdministradorBundle:Usuario:create" }
+    requirements: { _method: post }
+
+usuario_edit:
+    path:  /{id}/edit
+    defaults: { _controller: "AdministradorBundle:Usuario:edit" }
+    options:
+      expose: true
+      
+usuario_update:
+    path:  /{id}/update
+    defaults: { _controller: "AdministradorBundle:Usuario:update" }
+    requirements: { _method: post|put }
+
+usuario_delete:
+    path:  /{id}/delete
+    defaults: { _controller: "AdministradorBundle:Usuario:delete" }
+    requirements: { _method: post|delete }
+    options:
+      expose: true
+
+usuario_cargarArchivo:
+    path:  /cargarArchivo
+    defaults: { _controller: "AdministradorBundle:Usuario:cargarArchivo" }
+
+usuario_subirArchivo:
+    path:  /subirArchivo
+    defaults: { _controller: "AdministradorBundle:Usuario:subirArchivo" }
+
+usuario_aprobarAsociado:
+    path:  /aprobarAsociado
+    defaults: { _controller: "AdministradorBundle:Usuario:aprobarAsociado" }
+usuario_aprobarAsociados:
+    path:  /aprobarAsociados
+    defaults: { _controller: "AdministradorBundle:Usuario:aprobarAsociados" }

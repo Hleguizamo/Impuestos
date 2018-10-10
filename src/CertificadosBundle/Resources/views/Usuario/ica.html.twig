@@ -1,0 +1,113 @@
+<div id="row">
+	<div class="col-md-6 bg-primary">
+		<h3>CERTIFICADO DE RETENCI&Oacute;N I.C.A.</h3>
+	</div>
+	<div class="col-md-6"><h3>&nbsp;&nbsp;</h3></div>
+</div>
+<div id="row">
+	<div class="col-md-3">
+		<h4>A&Ntilde;O GRAVABLE:{{ year }}</h4>
+	</div>
+	<div class="col-md-3">
+		<h4>DE: 01 ENE {{ year }}</h4>
+	</div>
+	<div class="col-md-3">
+		<h4>HASTA: 31 DIC {{ year }}</h4>
+	</div>
+	<div class="col-md-3">
+		<h4>FECHA DE EXPEDICI&Oacute;N: {{ current_date }}</h4>
+	</div>
+</div>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div id="row">
+			<div class="col-md-4">Nombre o Razon Social</div>
+			<div class="col-md-8"><strong>Cooperativa Nacional de Droguistas Detallistas</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">N.I.T</div>
+			<div class="col-md-8"><strong>860.026.123-0</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Direcci&oacute;n</div>
+			<div class="col-md-8"><strong>Autopista Medellin Km 4.7 V&iacute;a Siberia Cota</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Tel&eacute;fono</div>
+			<div class="col-md-8"><strong>437 51 50</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Ciudad / Municipio</div>
+			<div class="col-md-8"><strong>Cota</strong></div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div id="row">
+			<div class="col-md-4">Se practivo retenci&oacute;n a:</div>
+			<div class="col-md-8"><strong>{{proveedor.nombre}}</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">N.I.T</div>
+			<div class="col-md-8"><strong>{{proveedor.nit}}</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Direcci&oacute;n</div>
+			<div class="col-md-8"><strong>{{proveedor.direccion}}</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Tel&eacute;fono</div>
+			<div class="col-md-8"><strong>{{proveedor.tel}}</strong></div>
+		</div>
+		<div id="row">
+			<div class="col-md-4">Ciudad / Municipio</div>
+			<div class="col-md-8"><strong>{{proveedor.ciudad}}</strong></div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<h1>Consignado en la Respectiva Jurisdicci&oacute;n seg&uacute;n el siguiente detalle</h1>
+		<table class="table table-bordered"> 
+			<thead> 
+				<tr> 
+					<th style="background-color: #127CC3;"><h5>MES</h5></th> 
+					<th style="background-color: #127CC3;"><h5>BASE RETENCI&Oacute;N</h5></th> 
+					<th style="background-color: #127CC3;"><h5>MONTO RETENIDO</h5></th> 
+					<th style="background-color: #127CC3;"><h5>% RETENIDO</h5></th>
+					<th style="background-color: #127CC3;"><h5>CIUDAD</h5></th> 
+				</tr> 
+			</thead> 
+			<tbody>
+				{% set totalvalorbase = 0 %}
+	            {% set totalrete = 0 %}
+	            {% for item in report %}
+	                {% set mes = item.Mes %}
+	                {% set sumaBase = item.SumaBase %}
+	                {% set rete = item.ValorRetenido %}
+	                {% set porcentaje = item.Porcentaje %}
+	                {% set ciudad = item.Ciudad %} 
+	            <tr>
+	                <td align='left' valign='top'>{{ mes }}</td>
+	                <td align='center' valign='top'>$ {{ sumaBase  | number_format(0, '.', ',')}}</td>
+	                <td align='center' valign='top'>$ {{ rete  | number_format(0, '.', ',')}}</td>
+	                <td align='center' valign='top'>{{ porcentaje }}</td>
+	                <td align='center' valign='top'>{{ ciudad }}</td>
+	            </tr>
+					{% set totalvalorbase = totalvalorbase + mes %}
+	                {% set totalrete = totalrete + rete %}
+		        {% endfor %}
+		        <tr style="background-color: #c7c7c7;">
+				    <td align="left" valign="top">TOTAL</td>
+				    <td align="center" valign="top">${{ totalvalorbase  | number_format(0, '.', ',')}}</td>
+				    <td align="center" valign="top">${{ totalrete  | number_format(0, '.', ',')}}</td>
+				    <td align="center" valign="top">&nbsp;</td>
+				    <td colspan="5" align="center" valign="top">&nbsp;</td>
+			    </tr>
+			</tbody> 
+		</table>
+		<h1>EL VALOR TOTAL DE LA RETENCI&Oacute;N ES DE: $ {{ totalrete | number_format(0, '.', ',')}}</h1>
+		<p>OBSERVACIONES: Forma continua impresa por computador no necesita firma aut&oacute;grafa. (Art. 10 D.R. 836/91)</p>
+	</div>
+</div>

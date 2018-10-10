@@ -1,0 +1,81 @@
+<?php
+
+namespace Impuestos\BackendBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * DataRenta
+ *
+ * @ORM\Table(name="data_renta", indexes={@ORM\Index(name="nit", columns={"nit"})})
+ * @ORM\Entity
+ */
+class DataRenta
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="nit", type="bigint", nullable=false)
+     */
+    private $nit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=455, nullable=false)
+     */
+    private $nombre;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="direcciÃ³n", type="string", length=455, nullable=false)
+     */
+    private $direcciã³n;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="concepto", type="string", length=250, nullable=false)
+     */
+    private $concepto = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tarifa", type="string", length=50, nullable=false)
+     */
+    private $tarifa;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="base", type="string", length=50, nullable=false)
+     */
+    private $base;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="retencion", type="string", length=50, nullable=false)
+     */
+    private $retencion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="year", type="string", length=10, nullable=true)
+     */
+    private $year;
+
+
+}

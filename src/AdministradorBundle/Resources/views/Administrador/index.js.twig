@@ -1,0 +1,88 @@
+{% set permiso = app.session.get('permisos') %}
+ 
+<script type="text/javascript">
+    jQuery().ready(function (){
+        $.jgrid.defaults.width = 780;
+        $.jgrid.defaults.responsive = true;
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        jQuery("#Grilla").jqGrid({
+            url: '{{ path('administrador_xml') }}',
+            datatype: "xml",
+            colModel:[
+                    {label: 'id',name:'id',index:'id', hidden: true},
+                    {label: 'NOMBRE',name:'nombre', index:'a.nombre' },
+                    {label: 'EMAIL',name:'email',index:'a.email' },
+                    {label: 'USUARIO',name:'username',index:'a.username' },
+                    {label: 'CLAVE',name:'password',index:'a.password' }
+            ],
+            rowNum: 100,
+            autowidth: true,
+            rowList: [100,200,300,400],
+            pager: '#pGrilla',
+            rowattr: function (rd) { return { 'class': 'pointer' }; },
+            sortname: 'a.id',
+            viewrecords: true,
+            sortorder: "desc",
+            height:840
+            {% if permiso['administradores']['tipo'] < 3 %}
+            ,ondblClickRow: function(ids) {
+                  var data = jQuery(this).getRowData(ids);
+                  loadingAlert(); 
+                    BootstrapDialog.show({
+                        title: 'Editar Administrador',
+                        cssClass: 'modal-app-edit',
+                        id: 'modal-app-edit',
+                        message: $('<div></div>').load(Routing.generate('administrador_edit', { id: data.id}))
+                    });
+                  swal.close();
+                }
+            {% endif %}
+        }).navGrid('#pGrilla',{edit:false,add:false,del:false},{},{},{},{multipleSearch:true});
+      {% if permiso['administradores']['tipo'] == 1 %}
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-success"><i class="fa fa-plus-square-o"></i> Nuevo<span>',buttonicon:"none", onClickButton:function(){
+              loadingAlert();
+              BootstrapDialog.show({
+                        title: 'Nuevo Administrador',
+                        cssClass: 'modal-admin-new',
+                        id: 'modal-admin-new',
+                        type: BootstrapDialog.TYPE_INFO,
+                        message: $('<div></div>').load('{{path('administrador_new')}}')
+                    });
+                swal.close();
+          }
+      });
+    {% endif %}
+    {% if permiso['administradores']['tipo'] < 3 %}
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-primary"><i class="fa fa-pencil"></i> Editar</span>', buttonicon:"none", onClickButton:function(){
+              var gsr = jQuery("#Grilla").jqGrid('getGridParam','selrow');
+               loadingAlert();
+              if(gsr){
+                  dataRow = jQuery("#Grilla").getRowData(gsr);
+                  BootstrapDialog.show({
+                        title: 'Editar Administrador',
+                        cssClass: 'modal-app-edit',
+                        id: 'modal-app-edit',
+                        message: $('<div></div>').load(Routing.generate('administrador_edit', { id: dataRow.id}))
+                    });
+                  swal.close();
+              }else{
+                  selectionAlert();
+              }
+          }
+      });
+    {% endif %}
+    {% if permiso['administradores']['tipo'] == 1 %}
+      jQuery("#Grilla").jqGrid('navButtonAdd','#pGrilla',{caption:'<span class="text-danger"><i class="fa fa-trash"></i> Eliminar</span>', title: "Eliminar Administrador", buttonicon:"none",onClickButton:function(){
+              var gsr = jQuery("#Grilla").jqGrid('getGridParam','selrow');
+              if(gsr){
+                  dataRow = jQuery("#Grilla").getRowData(gsr);
+                  confirmCompountAlert(dataRow.nombre,dataRow.id,'administrador_delete');
+             }else{
+              deleteAlert();
+           }
+          }
+      });
+    {% endif %}
+    });
+function ReloadGrid(){jQuery("#Grilla").trigger("reloadGrid");}
+</script>

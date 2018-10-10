@@ -1,0 +1,228 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/fileinput.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/override.forms.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/bootstrap-datetimepicker/moment-with-locales.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-datetimepicker/bootstrap-datetimepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/fileinput.min.js') }}"></script>
+    <script type="text/javascript">
+jQuery().ready(function(){
+    $('#form_fechaInicioIva,#form_fechaFinalIva,#form_fechaInicioIca,#form_fechaFinalIca').datetimepicker({
+        locale: 'es',
+        format: 'YYYY-MM'
+    });
+    $("#form_hoja1").fileinput({
+        uploadUrl: '{{path('admin_loadiva')}}',
+        uploadAsync: true,
+        showPreview: false,
+        type:'post',
+        dataType:'json',
+        allowedFileExtensions: ['csv'],
+        maxFileCount: 5,
+        elErrorContainer: '#kv-error-1',
+        uploadExtraData: function() {
+            return {
+                'form[fechaInicioIva]' : $('#form_fechaInicioIva').val(),
+                'form[fechaFinalIva]' : $('#form_fechaFinalIva').val(),
+                'form[_token]' : $('#form__token').val()
+            };
+        }
+    }).on('filebatchpreupload', function(event, data, id, index) {
+        $('#kv-success-1').html('<h4>Estado del cargue</h4><ul></ul>').hide();
+    }).on('fileuploaded', function(event, data, id, index) {
+        var fname = data.files[index].name,
+            out = '<li> Archivo cargado con exito, ' + data.response.registros + ' registros insertados. </li>';
+            $('#form_hoja1').val(''); 
+        $('#kv-success-1 ul').append(out);
+        $('#kv-success-1').fadeIn('slow');
+    });
+
+    $("#form_hoja2").fileinput({
+        uploadUrl: '{{path('admin_loadica')}}',
+        uploadAsync: true,
+        showPreview: false,
+        type:'post',
+        dataType:'json',
+        allowedFileExtensions: ['csv'],
+        maxFileCount: 5,
+        elErrorContainer: '#kv-error-2',
+        uploadExtraData: function() {
+            return {
+                'form[fechaInicioIca]' : $('#form_fechaInicioIca').val(),
+                'form[fechaFinalIca]' : $('#form_fechaFinalIca').val(),
+                'form[_token]' : $('#form__token').val()
+            };
+        }
+    }).on('filebatchpreupload', function(event, data, id, index) {
+        $('#kv-success-2').html('<h4>Estado del cargue</h4><ul></ul>').hide();
+    }).on('fileuploaded', function(event, data, id, index) {
+        var fname = data.files[index].name,
+            out = '<li> Archivo cargado con exito, ' + data.response.registros + ' registros insertados. </li>';
+        $('#form_hoja2').val(''); 
+        $('#kv-success-2 ul').append(out);
+        $('#kv-success-2').fadeIn('slow');
+    });
+
+    $("#form_hoja3").fileinput({
+        uploadUrl: '{{path('admin_loadrenta')}}',
+        uploadAsync: true,
+        showPreview: false,
+        type:'post',
+        dataType:'json',
+        allowedFileExtensions: ['csv'],
+        maxFileCount: 5,
+        elErrorContainer: '#kv-error-3',
+        uploadExtraData: function() {
+            return {
+                'form[_token]' : $('#form__token').val()
+            };
+        }
+    }).on('filebatchpreupload', function(event, data, id, index) {
+        $('#kv-success-3').html('<h4>Estado del cargue</h4><ul></ul>').hide();
+    }).on('fileuploaded', function(event, data, id, index) {
+        var fname = data.files[index].name,
+            out = '<li> Archivo cargado con exito, ' + data.response.registros + ' registros insertados. </li>';
+            $('#form_hoja3').val(''); 
+        $('#kv-success-3 ul').append(out);
+        $('#kv-success-3').fadeIn('slow');
+    });
+
+    $('#downloadPlantillaIva').click(function(){
+        window.open("{{path('download_plantilla_iva')}}");
+        });
+});
+</script>
+{% endblock %}
+{% block contenido %}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-md-10">
+            <div class="panel panel-danger">
+                <div class="panel-body">
+                    <p class="text-danger">Tenga en cuenta que la fecha de inicio es la fecha en la que se debe iniciar el borrado de datos, y la fecha final es la fecha final para completar el rango de borrado de datos. La fecha que se toma como referencia es la fecha de pago del Impuesto, por ejmeplo: para borrar Octubre en el Iva se debe borrar por la fecha de pago, es decir Noviembre.</p>
+                    <p class="text-danger">El formato de los archivos debe ser CSV separados por ; (Punto y Coma) y las fechas deben estar en el formato 2015-11-01 (AAAA-MM-DD)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-sm-10">
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <div class="text-center text-primary"><b>Actualizar informaci&oacute;n de IVA</b></div>
+                        <form method="POST" id="hoja1" class="form-horizontal text-center" style="padding: 20px" {{ form_start(form1) }}
+                            <div class="col-sm-3">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        {{ form_label(form1.fechaInicioIva) }}
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form1.fechaInicioIva) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        {{ form_label(form1.fechaFinalIva) }}
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ form_widget(form1.fechaFinalIva) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                    <div class="col-sm-2">
+                                        {{ form_label(form1.hoja1) }}
+                                    </div>
+                                    <div class="col-sm-10">
+                                        {{ form_widget(form1.hoja1) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_rest(form1) }}
+                           
+                        </form>
+                        <div id="kv-error-1" style="margin-top:10px;display:none"></div>
+                        <div id="kv-success-1" class="alert alert-success fade in" style="margin-top:10px;display:none"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-md-10">
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <div class="text-center text-primary"><b>Actualizar informaci&oacute;n de ICA</b></div>
+                    <form method="POST" id="hoja2"  class="form-horizontal text-center" style="padding: 20px" {{ form_start(form2) }}
+                        <div class="col-sm-3">
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    {{ form_label(form2.fechaInicioIca) }}
+                                </div>
+                                <div class="col-sm-8">
+                                    {{ form_widget(form2.fechaInicioIca) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    {{ form_label(form2.fechaFinalIca) }}
+                                </div>
+                                <div class="col-sm-8">
+                                    {{ form_widget(form2.fechaFinalIca) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group row">
+                                <div class="col-sm-2">
+                                    {{ form_label(form2.hoja2) }}
+                                </div>
+                                <div class="col-sm-10">
+                                    {{ form_widget(form2.hoja2) }}
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_rest(form2) }}
+                        <div id="kv-error-2" style="margin-top:10px;display:none"></div><div id="kv-success-2" class="alert alert-success fade in" style="margin-top:10px;display:none"></div>
+                    </form>
+                </div> 
+            </div>
+        </div>
+        <div class="col-sm-1">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+            <div class="col-md-10">
+                <div class="panel panel-info">
+                    <div class="text-center text-primary"><b>De clic sobre el icono para iniciar el cargue del archivo, una ves cargado haga clic en el boton <b>CARGAR RENTA</b> para almacenar la infomación en base de datos</b></div>
+                    <div class="panel-body">
+                        <form class="form-horizontal form-well" method="POST" id="hoja3" {{ form_start(form3) }}
+                            <p>El formato de nombre de archivo debe ser RENTA-dd-mm-aaaa.csv</p>
+                            {{ form_widget(form3) }}
+                            <div id="kv-error-3" style="margin-top:10px;display:none"></div>
+                            <div id="kv-success-3" class="alert alert-success fade in" style="margin-top:10px;display:none"></div>
+                        </form>
+                    </div> 
+                </div>
+            </div>
+        <div class="col-sm-1">&nbsp;</div>
+    </div>
+</div>
+</div>
+{% endblock %}

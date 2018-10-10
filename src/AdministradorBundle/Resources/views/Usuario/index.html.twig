@@ -1,0 +1,35 @@
+{% extends 'AdministradorBundle::interna.html.twig' %}
+{% set permiso = app.session.get('permisos') %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/jqgrid/ui.jqgrid-bootstrap.css') }}" />
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/jqgrid/i18n/grid.locale-es.js') }}"></script>
+    <script src="{{ asset('js/jqgrid/jquery.jqGrid.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.form.min.js') }}"></script>
+    {% include 'AdministradorBundle:Usuario:index.js.twig' %}
+{% endblock %}
+{% block contenido %}
+
+    <table id="Grilla"></table>
+    <div id="pGrilla"></div>
+    <div id="dialog"></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="idModalLG" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center text-danger">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="idTittleModalLg"></h4>
+                </div>
+                <div class="modal-body" id="idBodyModalLg">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

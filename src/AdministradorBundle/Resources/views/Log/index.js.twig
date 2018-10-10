@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    datePick = function (elem) {
+        jQuery(elem).datepicker({
+          autoclose: true,
+          language: "es",
+          todayHighlight: true,
+          format: 'yyyy-mm-dd',
+          orientation : 'bottom'
+        });
+    };
+    jQuery().ready(function (){
+        $.jgrid.defaults.width = 780;
+        $.jgrid.defaults.responsive = true;
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        jQuery("#Grilla").jqGrid({
+            url: '{{ path('log_xml') }}',
+            datatype: "xml",
+            colNames:['id','FECHA', 'USUARIO', 'NIT', 'ACTIVIDAD'],
+            colModel:[
+                    {name:'id',index:'LA.id', hidden: true},
+                    {name:'fecha', index:'LA.fecha', width:30, searchtype: "number", searchoptions: {dataInit: datePick, attr: {title: 'Seleccione la fecha'}}},
+                    {name:'usuario',index:'LA.usuario', width:60},
+                    {name:'nit',index:'LA.nit', width:30},
+                    {name:'actividad',index:'LA.actividad'}
+            ],
+            rowNum: 100,
+            rowattr: function (rd) { return { 'class': 'normal' }; },
+            autowidth: true,
+            rowList: [100,200,300,400],
+            pager: '#pGrilla',
+            sortname: 'LA.id',
+            viewrecords: true,
+            sortorder: "desc",
+            height:840
+        
+        });
+        jQuery("#Grilla").jqGrid('navGrid','#pGrilla',{del:false,add:false,edit:false},{},{},{},{multipleSearch:true});
+    });
+
+</script>
